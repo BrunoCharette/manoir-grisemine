@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Grisemine">
+<title>Le manoir de Grisemine</title>
+<style>
+/* Page autonome pour iPad iOS 9 (Safari 9) : ni variables CSS, ni grid, ni gap, ni env(). */
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;height:100%;background:#07040a;color:#ece2d0;font-family:"Avenir Next","Helvetica Neue",Helvetica,Arial,sans-serif;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:rgba(0,0,0,0);-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;overflow:hidden}
+input{-webkit-user-select:text;user-select:text}
+[data-a],[data-k],button{cursor:pointer}
+#fond{position:fixed;top:0;left:0;right:0;bottom:0;background:#0b0610;background:radial-gradient(ellipse at 50% 18%,#2b1739 0%,#140a1d 50%,#050307 100%);overflow:hidden}
+.brume{position:absolute;left:-50%;width:200%;height:50%;bottom:-12%;background:radial-gradient(ellipse at center,rgba(170,160,200,.17) 0%,rgba(170,160,200,0) 62%);animation:brume 26s ease-in-out infinite alternate}
+.brume.b2{bottom:auto;top:-20%;opacity:.55;animation-duration:38s;animation-direction:alternate-reverse}
+@keyframes brume{from{transform:translate3d(-12%,0,0)}to{transform:translate3d(12%,0,0)}}
+#vignette{position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;box-shadow:inset 0 0 110px 0 rgba(0,0,0,.95);z-index:5}
+#eclair{position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;background:#dfe6ff;opacity:0;z-index:6}
+#eclair.flash{animation:eclair 1.6s ease-out}
+@keyframes eclair{0%{opacity:0}8%{opacity:.16}16%{opacity:.03}26%{opacity:.2}100%{opacity:0}}
+#app{position:fixed;top:0;left:0;right:0;bottom:0;z-index:2}
+.defile{position:absolute;top:0;left:0;right:0;bottom:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.page{max-width:920px;margin:0 auto;padding:88px 18px 70px}
+.centre{text-align:center}
+.ico{display:inline-block;vertical-align:middle}
+h1,h2,.titre{font-family:Copperplate,"Copperplate Gothic Light",Georgia,serif;font-weight:normal;letter-spacing:.08em;text-transform:uppercase}
+h2{font-size:27px;margin:4px 0 10px;color:#f3e3c0;text-shadow:0 0 18px rgba(255,170,60,.35)}
+.consigne{font-size:19px;line-height:1.45;margin:0 0 16px;opacity:.94}
+.btn{display:inline-block;border:2px solid #b47cff;background:rgba(40,18,52,.88);color:#f6ead2;font-size:20px;padding:12px 26px;border-radius:40px;min-height:52px;font-family:inherit;margin:6px;text-align:center;line-height:1.3}
+.btn:active,.opt:active,.case:active{transform:scale(.97)}
+.btn-sec{border-color:rgba(255,255,255,.3);font-size:17px}
+.carte{background:#e6d7b8;background:linear-gradient(160deg,#efe2c4,#d4bf98);color:#2a1a10;border-radius:10px;box-shadow:0 8px 28px rgba(0,0,0,.6),inset 0 0 40px rgba(120,80,30,.25);padding:16px}
+.apparait{animation:apparait .7s ease-out}
+@keyframes apparait{from{opacity:0;transform:translate3d(0,14px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+.secoue{animation:secoue .5s}
+@keyframes secoue{0%,100%{transform:translateX(0)}20%{transform:translateX(-11px)}40%{transform:translateX(9px)}60%{transform:translateX(-6px)}80%{transform:translateX(4px)}}
+.lueur{animation:lueur 6s infinite}
+@keyframes lueur{0%,100%{text-shadow:0 0 22px rgba(255,140,40,.55)}46%{text-shadow:0 0 22px rgba(255,140,40,.55)}48%{text-shadow:0 0 2px rgba(255,140,40,.1)}50%{text-shadow:0 0 26px rgba(255,140,40,.7)}52%{text-shadow:0 0 4px rgba(255,140,40,.15)}}
+.fl{animation:flamme 1.3s ease-in-out infinite alternate}
+@keyframes flamme{from{opacity:1}to{opacity:.7}}
+
+/* Accueil */
+.accueil{text-align:center;padding-top:40px}
+.accueil h1{font-size:46px;line-height:1.15;margin:10px 0 6px;color:#f6e2b8}
+.sous{font-size:19px;opacity:.75;margin:0 0 28px;font-style:italic}
+.lune-acc{width:150px;height:150px;border-radius:50%;margin:0 auto;background:#efdfba;box-shadow:0 0 60px 20px rgba(246,231,200,.25);position:relative}
+.lune-acc svg{position:absolute;width:110px;left:-30px;top:40px}
+.choix-eq{margin:0 -6px}
+.eq-btn{display:inline-block;vertical-align:top;width:calc(50% - 14px);margin:7px;padding:18px 10px;border-radius:18px;border:2px solid;background:rgba(18,9,24,.85);text-align:center}
+.eq-btn svg{width:80px;height:80px}
+.eq-btn b{display:block;font-family:Copperplate,Georgia,serif;letter-spacing:.08em;text-transform:uppercase;font-size:22px;margin-top:6px}
+.eq-btn small{display:block;font-size:15px;opacity:.7;margin-top:4px}
+.liens{margin-top:26px}
+
+/* Entête d'équipe */
+#entete{position:fixed;top:0;left:0;right:0;height:70px;z-index:4;background:linear-gradient(rgba(5,3,8,.97),rgba(5,3,8,.7));border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;padding:0 10px}
+.blason{width:54px;height:54px;border-radius:50%;border:2px solid;display:flex;align-items:center;justify-content:center;background:#140b1c;flex:none}
+.blason svg{width:40px;height:40px}
+.ent-titre{flex:1;margin-left:10px;min-width:0}
+.ent-titre b{display:block;font-family:Copperplate,Georgia,serif;letter-spacing:.06em;text-transform:uppercase;font-size:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ent-titre small{font-size:13px;opacity:.7}
+.progres{white-space:nowrap;margin:0 4px}
+.progres svg{width:22px;height:26px;opacity:.22}
+.progres svg.on{opacity:1}
+.btn-mini{border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.06);color:#ece2d0;border-radius:24px;padding:0 12px;height:46px;font-size:16px;margin-left:6px;display:flex;align-items:center;flex:none}
+.btn-mini svg{width:24px;height:24px;margin-right:4px}
+
+/* Murmures et voiles */
+#murmure{position:fixed;left:5%;right:5%;top:84px;z-index:8;text-align:center;pointer-events:none;opacity:0;transition:opacity .4s}
+#murmure span{display:inline-block;background:rgba(10,4,14,.94);border:1px solid rgba(180,124,255,.5);color:#e8d8ff;padding:12px 22px;border-radius:30px;font-style:italic;font-size:19px}
+#murmure.vu{opacity:1}
+.voile{position:fixed;top:0;left:0;right:0;bottom:0;z-index:9;background:rgba(3,1,5,.9);display:flex;align-items:center;justify-content:center;padding:20px;animation:fondu .5s;overflow-y:auto}
+.voile .boite{max-width:640px;width:100%;text-align:center}
+.voile p{font-size:20px;line-height:1.5}
+.titre-voile{font-family:Copperplate,Georgia,serif;text-transform:uppercase;letter-spacing:.1em;font-size:30px;color:#ffd36a;margin-bottom:12px;text-shadow:0 0 20px rgba(255,190,60,.5)}
+@keyframes fondu{from{opacity:0}to{opacity:1}}
+.indice{background:rgba(255,255,255,.07);border-left:4px solid #b47cff;text-align:left;padding:12px 16px;margin:10px 0;font-size:19px;line-height:1.4;border-radius:6px}
+
+/* Petites apparitions */
+.yeux{position:fixed;z-index:3;width:70px;height:16px;pointer-events:none;animation:yeux 4.2s ease-in-out forwards}
+.yeux i{position:absolute;top:0;left:0;width:24px;height:13px;border-radius:50%;background:#ffd54a;box-shadow:0 0 14px 4px rgba(255,190,40,.55);animation:cligne 4.2s}
+.yeux i+i{left:40px}
+@keyframes yeux{0%{opacity:0}18%{opacity:.95}82%{opacity:.95}100%{opacity:0}}
+@keyframes cligne{0%,38%,44%,68%,74%,100%{transform:scaleY(1)}41%,71%{transform:scaleY(.1)}}
+.descente{position:fixed;top:0;z-index:3;width:60px;height:240px;margin-left:-30px;pointer-events:none;animation:descente 10s ease-in-out forwards}
+.descente i{position:absolute;left:29px;top:0;width:1px;height:200px;background:rgba(220,220,230,.5)}
+.descente svg{position:absolute;bottom:0;left:0;width:60px;height:60px}
+@keyframes descente{0%{transform:translate3d(0,-250px,0)}40%,62%{transform:translate3d(0,0,0)}100%{transform:translate3d(0,-250px,0)}}
+.vol{position:fixed;left:0;z-index:3;width:110px;pointer-events:none;animation:vol 7s linear forwards}
+.vol svg{width:110px;animation:ailes .18s ease-in-out infinite alternate}
+@keyframes vol{0%{transform:translate3d(-160px,0,0)}25%{transform:translate3d(25vw,-50px,0)}50%{transform:translate3d(50vw,25px,0)}75%{transform:translate3d(75vw,-35px,0)}100%{transform:translate3d(110vw,0,0)}}
+@keyframes ailes{from{transform:scaleY(1)}to{transform:scaleY(.45)}}
+.chuchot{position:fixed;z-index:3;pointer-events:none;font-family:Georgia,serif;font-style:italic;color:rgba(230,210,255,.75);font-size:24px;text-shadow:0 0 12px rgba(160,100,255,.6);animation:chuchot 6s ease-in-out forwards;max-width:60%}
+@keyframes chuchot{0%{opacity:0;transform:translate3d(0,8px,0)}25%,70%{opacity:1}100%{opacity:0;transform:translate3d(0,-10px,0)}}
+
+/* Récit */
+.recit{max-width:680px;margin:0 auto}
+.recit-ico{text-align:center}
+.recit-ico svg{width:120px;height:120px}
+.recit h2{text-align:center;font-size:32px}
+.recit p{font-size:21px;line-height:1.55}
+
+/* Choix */
+.notes{margin:0 0 14px}
+.note{background:#f3e9c9;color:#2a1a10;padding:10px 14px 10px 46px;margin:8px 0;border-radius:4px;font-size:18px;line-height:1.35;position:relative;box-shadow:0 4px 14px rgba(0,0,0,.5);transform:rotate(-.6deg)}
+.note:nth-child(2n){transform:rotate(.7deg)}
+.note svg{position:absolute;left:8px;top:8px;width:30px;height:30px}
+.opts{margin:0 -6px}
+.opt{display:inline-block;vertical-align:top;width:calc(50% - 12px);margin:6px;text-align:center;min-height:200px;border:3px solid transparent;transition:border-color .3s}
+.opt svg{width:70px;height:70px}
+.opt b{display:block;font-family:Copperplate,Georgia,serif;letter-spacing:.04em;text-transform:uppercase;font-size:19px;margin:6px 0}
+.opt p{font-size:17px;line-height:1.4;margin:0}
+.opt.choisi{border-color:#5fd35a;box-shadow:0 0 30px rgba(95,211,90,.6)}
+
+/* Série de questions */
+.bougies{text-align:center;margin:4px 0 6px}
+.bougies svg{width:36px;height:46px;opacity:.2;margin:0 2px}
+.bougies svg.on{opacity:1}
+.question{font-size:32px;font-family:Georgia,serif;text-align:center;margin:20px 0 22px;line-height:1.35}
+.trou{display:inline-block;min-width:110px;border-bottom:3px dashed #ffd36a;color:#ffd36a}
+.reps{text-align:center}
+.rep{min-width:170px;font-size:22px;font-family:Georgia,serif}
+.rep.juste{border-color:#5fd35a;background:#1f3d1c}
+.lettres{text-align:center;margin:6px 0}
+.lettres span{display:inline-block;width:52px;height:62px;line-height:62px;margin:4px;border-bottom:3px solid #ffd36a;font-size:38px;font-family:Georgia,serif;color:#ffd36a;vertical-align:bottom}
+
+/* Cadenas à chiffres */
+.cad{text-align:center;margin:20px auto 0;max-width:430px;padding:16px;border-radius:16px;background:rgba(20,10,26,.88);border:1px solid rgba(255,255,255,.14)}
+.cad-ico{width:54px;height:54px}
+.cad-t{font-family:Copperplate,Georgia,serif;text-transform:uppercase;letter-spacing:.08em;font-size:18px;margin:4px 0;color:#d9c49a}
+.cases{margin:10px 0 14px;white-space:nowrap}
+.case{display:inline-block;width:52px;height:64px;line-height:62px;margin:0 3px;border-radius:8px;background:#0c0710;border:2px solid #5a4a6a;font-size:36px;font-family:Georgia,serif;color:#ffd36a;vertical-align:middle}
+.cases.ouvert .case{border-color:#5fd35a;color:#8ff07a;box-shadow:0 0 16px rgba(95,211,90,.5)}
+.pave{font-size:0}
+.pave button{width:30%;height:58px;margin:1.5%;font-size:26px;border-radius:12px;border:1px solid #4a3a5a;background:#231531;color:#f0e4cc;font-family:Georgia,serif;-webkit-appearance:none}
+.pave button.petit{font-size:16px;font-family:inherit}
+.pave button.vide{visibility:hidden}
+
+/* Recette et étagère (grenier) */
+.recette{text-align:center;margin-bottom:16px}
+.recette .titre{font-size:20px;margin-bottom:6px}
+.recette svg{width:64px;height:64px;margin:4px}
+.etagere{margin:0 -5px;text-align:center}
+.pot{display:inline-block;vertical-align:top;width:calc(33.33% - 10px);margin:5px;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:10px 4px;border-bottom:6px solid #3a2516}
+.pot svg{width:58px;height:58px}
+.pot div{font-size:19px;font-family:Georgia,serif;color:#f6e7c8;margin-top:4px}
+
+/* Tri des balais */
+.plateau{min-height:64px;text-align:center;padding:8px;border-radius:14px;background:rgba(0,0,0,.3);margin-bottom:10px}
+.puce{display:inline-block;margin:5px;padding:10px 16px;border-radius:26px;background:#efe2c4;color:#2a1a10;font-size:19px;border:3px solid transparent;font-family:Georgia,serif}
+.puce.sel{border-color:#ffd36a;box-shadow:0 0 16px rgba(255,211,106,.9)}
+.bacs{margin:0 -6px}
+.bac{display:inline-block;vertical-align:top;width:calc(50% - 12px);margin:6px;min-height:130px;border:2px dashed rgba(255,255,255,.3);border-radius:14px;padding:10px;background:rgba(0,0,0,.4);text-align:center}
+.bac-t{font-family:Copperplate,Georgia,serif;letter-spacing:.04em;font-size:18px;color:#ffd36a;margin-bottom:6px}
+.vide-txt{opacity:.5;font-style:italic;font-size:15px}
+
+/* Collection de balais (couleurs) */
+.balais{text-align:center;font-size:0}
+.balai{display:inline-block;vertical-align:top;width:15.6%;margin:0 .5%;background:rgba(0,0,0,.45);border-radius:10px;padding:8px 3px 10px;font-size:15px;line-height:1.3}
+.balai .n{display:block;color:#ffd36a;font-family:Georgia,serif;font-size:18px}
+.balai svg{width:32px;height:96px}
+.plaque{background:#000;color:#fff;border:1px solid #777;font-family:Copperplate,Georgia,serif;font-size:13px;letter-spacing:.02em;padding:6px 2px;margin:6px 0;border-radius:4px}
+.gn{font-weight:bold;margin:6px 0;font-family:Georgia,serif}
+.pastilles{margin:6px 0 10px}
+.pastille{display:inline-block;width:54px;height:54px;border-radius:50%;margin:5px;border:3px solid rgba(255,255,255,.35);vertical-align:middle;line-height:48px;font-size:24px;color:#fff;background:#120a18}
+
+/* Jardin (placer) */
+.lettre{font-family:Noteworthy,"Segoe Print","Bradley Hand","Comic Sans MS",cursive;font-size:19px;line-height:1.5}
+.lettre p{margin:0 0 8px}
+.lettre ul{margin:0 0 8px;padding-left:20px}
+.lettre li{margin-bottom:6px}
+.scene{position:relative;width:100%;padding-bottom:70%;border-radius:12px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.7)}
+.scene svg.decor{position:absolute;top:0;left:0;width:100%;height:100%}
+.spot{position:absolute;width:14%;margin-left:-7%;margin-top:-7%;border-radius:50%;border:3px dashed rgba(255,240,200,.7);background:rgba(255,240,200,.14)}
+.spot:before{content:'';display:block;padding-bottom:100%}
+.spot .num{position:absolute;top:-8px;left:-8px;width:28px;height:28px;border-radius:50%;background:#ffd36a;color:#2a1a10;font-weight:bold;text-align:center;line-height:28px;font-size:17px;z-index:2}
+.spot svg{position:absolute;top:2%;left:2%;width:96%;height:96%}
+.spot.plein{border-style:solid;border-color:#ffd36a}
+.spot .chf,.cit .chf{position:absolute;bottom:-6px;left:50%;margin-left:-15px;width:30px;height:30px;border-radius:50%;background:#fff8e6;color:#2a1a10;font-weight:bold;line-height:27px;text-align:center;font-family:Georgia,serif;font-size:19px;border:2px solid #2a1a10;z-index:2}
+.plateau-cit{text-align:center;margin:12px 0 0;padding:6px;border-radius:14px;background:rgba(0,0,0,.35);min-height:110px}
+.cit{display:inline-block;width:17%;margin:1%;position:relative;padding:4px 4px 12px;border-radius:12px;border:3px solid transparent;vertical-align:top}
+.cit svg{width:100%;height:auto}
+.cit.sel{border-color:#ffd36a;box-shadow:0 0 16px rgba(255,211,106,.9)}
+.deux>div{margin-bottom:14px}
+@media (orientation:landscape){.deux{display:flex;align-items:flex-start}.deux>div{flex:1;min-width:0}.deux>div+div{margin-left:14px}}
+
+/* Bocaux (ordre) */
+.bocaux{text-align:center;font-size:0}
+.bocal{display:inline-block;width:18%;margin:1%;position:relative;vertical-align:top;font-size:15px}
+.bocal svg{width:100%;height:auto}
+.bocal .etq{position:absolute;top:36%;left:14%;right:14%;line-height:1.25;color:#2a1a10;background:#efe2c4;border-radius:6px;padding:6px 3px;font-family:Georgia,serif;box-shadow:0 2px 6px rgba(0,0,0,.5)}
+.bocal.pris{opacity:.3}
+.bocal .rang{position:absolute;top:-6px;right:-4px;width:30px;height:30px;border-radius:50%;background:#ffd36a;color:#2a1a10;line-height:30px;font-weight:bold;font-size:17px}
+
+/* Liste de courses (erreurs) */
+.liste{font-family:Noteworthy,"Segoe Print","Bradley Hand","Comic Sans MS",cursive;font-size:24px;line-height:1.9}
+.liste .titre{font-size:20px;margin-bottom:8px}
+.mot{padding:2px 3px;border-radius:6px}
+.mot.trouve{background:rgba(70,150,60,.25)}
+.mot.trouve s{color:#a33}
+.mot.trouve b{color:#1d6a1a}
+.mot.bien{background:rgba(120,90,160,.3)}
+.compteur{text-align:center;font-size:20px;margin:12px 0;color:#ffd36a}
+
+/* Construire */
+.cible{text-align:center;font-size:20px;margin:8px 0}
+.cible b{font-family:Copperplate,Georgia,serif;color:#ffd36a;letter-spacing:.05em}
+.phrase{min-height:66px;border-bottom:2px solid #ffd36a;font-size:30px;font-family:Georgia,serif;padding:12px;margin:10px auto 16px;text-align:center;max-width:620px}
+.tuiles{text-align:center}
+.tuile{display:inline-block;padding:12px 20px;margin:6px;border-radius:10px;background:#efe2c4;color:#2a1a10;font-size:24px;font-family:Georgia,serif;box-shadow:0 4px 10px rgba(0,0,0,.5)}
+.tuile.usee{visibility:hidden}
+
+/* Message et sceau */
+.message,.sceau-ecran,.fin{text-align:center;max-width:680px;margin:0 auto}
+.msg-ico{width:120px;height:120px;animation:flotte 3s ease-in-out infinite alternate}
+@keyframes flotte{from{transform:translate3d(0,-6px,0)}to{transform:translate3d(0,6px,0)}}
+.mot-secret{font-family:Georgia,serif;font-size:52px;letter-spacing:.14em;color:#e8d8ff;text-shadow:0 0 24px rgba(180,124,255,.9);margin:14px 0 18px}
+.sceau{position:relative;width:170px;height:170px;margin:0 auto}
+.sceau>svg{width:170px;height:170px}
+.sceau-ico{position:absolute;top:50%;left:50%;width:80px;height:80px;margin:-40px 0 0 -40px;opacity:.55}
+.sceau-ico svg{width:80px;height:80px}
+.sceau.brise{animation:brise 1s forwards}
+@keyframes brise{30%{transform:scale(1.1) rotate(4deg)}100%{transform:scale(.6) rotate(-20deg);opacity:0}}
+.mdp{font-size:28px;padding:12px;border-radius:12px;border:2px solid #b47cff;background:#0c0710;color:#ffd36a;text-align:center;width:100%;max-width:420px;letter-spacing:.12em;text-transform:uppercase;margin:6px 0 4px;font-family:Georgia,serif;-webkit-appearance:none}
+.ingr svg{width:130px;height:130px}
+.ingr b{display:block;font-family:Copperplate,Georgia,serif;text-transform:uppercase;letter-spacing:.06em;font-size:24px;color:#ffd36a;margin:6px 0 16px}
+.fin-carte{margin:0 auto 18px;max-width:520px}
+.fin-carte small{text-transform:uppercase;letter-spacing:.1em;font-size:13px;opacity:.7}
+.gros-chiffre{font-family:Georgia,serif;font-size:76px;line-height:1.1;color:#5a1d6e}
+.vers{font-family:Noteworthy,"Segoe Print",Georgia,serif;font-size:26px;margin:4px 0 4px}
+.fin-l+.fin-l{border-top:1px dashed rgba(42,26,16,.4);margin-top:10px;padding-top:10px}
+
+/* Tableau (TNI) */
+.tni{position:absolute;top:0;left:0;right:0;bottom:0;overflow:hidden}
+.tni-intro{max-width:1100px;margin:0 auto;padding:5vh 4vw;text-align:center}
+.tni-intro h1{font-size:5.4vw;color:#f6e2b8;margin:0 0 3vh}
+.tni-intro p{font-size:2.5vw;line-height:1.45;margin:0 0 2.4vh;font-family:Georgia,serif}
+.tni-intro .btn{font-size:2vw;padding:1.4vh 3vw}
+.duree{font-size:2.4vw;margin:2vh 0}
+.duree b{display:inline-block;min-width:8vw;color:#ffd36a;font-size:3.4vw;font-family:Georgia,serif}
+.tni-veille{display:flex;height:100%;align-items:center;padding:2vh 2vw}
+.tni-scene{flex:0 0 60%;position:relative}
+.tni-scene .scene{box-shadow:0 0 60px rgba(0,0,0,.9)}
+.tni-cote{flex:1;text-align:center;padding-left:2vw}
+.chrono{font-size:9vw;font-family:Georgia,serif;color:#ffd36a;text-shadow:0 0 30px rgba(255,170,40,.5);line-height:1}
+.chrono-l{font-family:Copperplate,Georgia,serif;text-transform:uppercase;letter-spacing:.12em;font-size:1.5vw;opacity:.75;margin:1vh 0}
+.bougie-tni{position:relative;height:28vh;width:4.5vw;margin:5vh auto 2vh}
+.bougie-tni .corps{position:absolute;bottom:0;left:0;width:100%;background:linear-gradient(90deg,#cdbf9f,#fff6e0,#cbbd9c);border-radius:6px 6px 2px 2px;transition:height 1s linear}
+.bougie-tni .flamme{position:absolute;left:50%;top:-6vh;width:3vw;height:6vh;margin-left:-1.5vw;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;background:radial-gradient(ellipse at 50% 70%,#fff4b0 0%,#ffb23a 45%,rgba(255,90,20,0) 72%);animation:flamme 1s ease-in-out infinite alternate}
+.blasons-tni{margin:2vh 0}
+.blasons-tni span{display:inline-block;width:5.6vw;height:5.6vw;border-radius:50%;border:3px solid;margin:0 .5vw;background:#140b1c;opacity:.35;transition:all .6s;vertical-align:middle}
+.blasons-tni span svg{width:70%;height:70%;margin-top:15%}
+.blasons-tni span.libre{opacity:1;box-shadow:0 0 30px currentColor}
+.tni-btns .btn{font-size:1.5vw;padding:1vh 1.6vw;min-height:0}
+.urgence #fond{background:radial-gradient(ellipse at 50% 18%,#3a1420 0%,#1d0a12 50%,#070204 100%)}
+.urgence .chrono{color:#ff6a5a;animation:pouls 1.2s infinite}
+@keyframes pouls{0%,100%{transform:scale(1)}15%{transform:scale(1.05)}30%{transform:scale(1)}45%{transform:scale(1.03)}}
+.chaudron-ecran{display:flex;height:100%;align-items:center;padding:3vh 3vw}
+.ch-gauche{flex:0 0 40%;padding-right:2vw}
+.ch-gauche h2{font-size:3vw}
+.ch-gauche p{font-size:2.1vw;line-height:1.4;font-family:Georgia,serif;margin:0 0 1.6vh}
+.ch-centre{flex:1;text-align:center}
+.gros-chaudron{width:24vw;height:24vw}
+.ingredients-tni span{display:inline-block;width:11vw;margin:.6vw;padding:1vw .4vw;border-radius:16px;border:2px solid rgba(255,255,255,.3);background:rgba(20,10,26,.88);font-size:1.4vw;vertical-align:top}
+.ingredients-tni span svg{width:6vw;height:6vw;display:block;margin:0 auto .6vh}
+.fentes{margin:1vh 0 2vh}
+.fentes span{display:inline-block;width:6vw;height:6vw;border-radius:50%;border:3px dashed rgba(255,211,106,.6);margin:0 .5vw;vertical-align:middle}
+.fentes span svg{width:80%;height:80%;margin-top:10%}
+.tni .cad{max-width:42vw}
+.tni .case{width:7vw;height:9vw;line-height:9vw;font-size:6vw}
+.tni .pave button{height:7vh;font-size:3vw}
+.tni .pave button.petit{font-size:1.6vw}
+.formule{max-width:1200px;margin:0 auto;padding:6vh 4vw;text-align:center}
+.formule h2{font-size:3.4vw}
+.formule .ligne{font-family:Georgia,serif;font-style:italic;font-size:4vw;margin:2.4vh 0;color:#f3e3c0}
+.formule .ligne svg{width:4vw;height:4vw;margin-right:1vw}
+.formule .tous{font-size:3vw;color:#ffd36a;margin-top:3vh}
+.formule .btn{font-size:2vw}
+.finale{position:absolute;top:0;left:0;right:0;bottom:0;padding:0 8vw;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.finale p{font-family:Georgia,serif;font-size:3.6vw;margin:1.6vh 0;opacity:0;transition:opacity 1.6s}
+.finale p.vu{opacity:1}
+.finale p.petit{font-size:2vw;font-style:italic;color:#c9b8e8}
+.finale .gros{font-family:Copperplate,Georgia,serif;text-transform:uppercase;letter-spacing:.1em;font-size:6vw;color:#ffd36a;text-shadow:0 0 40px rgba(255,190,60,.7)}
+.bat-f{position:fixed;left:50%;top:50%;width:90px;margin:-25px 0 0 -45px;z-index:7;transition:transform 3s ease-out,opacity 3s ease-in;pointer-events:none}
+.bat-f svg{width:90px;animation:ailes .16s ease-in-out infinite alternate}
+.coin-prof{position:fixed;top:10px;left:10px;z-index:8;opacity:.35;font-size:14px;padding:6px 10px;border:1px solid rgba(255,255,255,.3);border-radius:16px;background:rgba(0,0,0,.4);color:#ece2d0}
+
+/* Guide */
+.guide{background:#f6f0e4;color:#1e1410;position:absolute;top:0;left:0;right:0;bottom:0;overflow-y:auto;-webkit-overflow-scrolling:touch;-webkit-user-select:text;user-select:text}
+.guide .page{padding-top:30px;max-width:900px}
+.guide h1{font-size:30px;color:#4a1d5e;margin:0 0 6px}
+.guide h2{color:#4a1d5e;text-shadow:none;font-size:20px;margin-top:28px;border-bottom:2px solid #4a1d5e;padding-bottom:4px}
+.guide p,.guide li{font-size:16px;line-height:1.5}
+.guide table{border-collapse:collapse;width:100%;font-size:15px;margin:8px 0}
+.guide th,.guide td{border:1px solid #bba98c;padding:6px 8px;text-align:left;vertical-align:top}
+.guide th{background:#e6dac4}
+.guide .code{font-family:Menlo,Consolas,monospace;font-weight:bold;color:#8c1d2c}
+.guide .btn{color:#f6ead2}
+.mode-guide #vignette,.mode-guide #fond{display:none}
+@media print{body,html{overflow:visible;height:auto;background:#fff}#fond,#vignette,.no-print{display:none}#app,.guide{position:static;overflow:visible}}
+</style>
+</head>
+<body>
+<div id="fond"><div class="brume"></div><div class="brume b2"></div></div>
+<div id="app"></div>
+<div id="vignette"></div>
+<div id="eclair"></div>
+<div id="murmure"><span></span></div>
+<script>
+(function () {
+'use strict';
+
+/* ================================================================
+   LE MANOIR DE GRISEMINE — jeu d'évasion collectif d'Halloween
+   4 équipes (1 iPad chacune) + le Tableau de la classe (TNI).
+   ES5 strict : doit tourner sur Safari 9 (iPad iOS 9).
+   ================================================================ */
+
+var CLE = 'grisemine-v1';
+var CLE_TNI = 'grisemine-tni-v1';
+var CODE_PROF = '1031';
+
+function lire(k) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch (e) { return null; } }
+function ecrire(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+function $(s) { return document.querySelector(s); }
+function hasard(t) { return t[Math.floor(Math.random() * t.length)]; }
+function melange(t) {
+  var a = t.slice(), i, j, x;
+  for (i = a.length - 1; i > 0; i--) { j = Math.floor(Math.random() * (i + 1)); x = a[i]; a[i] = a[j]; a[j] = x; }
+  return a;
+}
+function cible(e, racine) {
+  var t = e.target;
+  while (t && t !== racine) {
+    if (t.getAttribute && t.getAttribute('data-a')) return t;
+    t = t.parentNode;
+  }
+  return null;
+}
+function action(t) { return t ? t.getAttribute('data-a') : null; }
+function secouer(el) {
+  if (!el) return;
+  el.classList.remove('secoue'); void el.offsetWidth; el.classList.add('secoue');
+}
+function norm(s) {
+  var acc = { 'À': 'A', 'Â': 'A', 'Ä': 'A', 'Á': 'A', 'É': 'E', 'È': 'E', 'Ê': 'E', 'Ë': 'E', 'Î': 'I', 'Ï': 'I', 'Í': 'I', 'Ô': 'O', 'Ö': 'O', 'Ó': 'O', 'Ù': 'U', 'Û': 'U', 'Ü': 'U', 'Ú': 'U', 'Ç': 'C' };
+  s = (s || '').toUpperCase();
+  var r = '', i, c;
+  for (i = 0; i < s.length; i++) { c = acc[s.charAt(i)] || s.charAt(i); if (c >= 'A' && c <= 'Z') r += c; }
+  return r;
+}
+function joindre(mots) { return mots.join(' ').replace(/’ /g, '’'); }
+
+/* ---------------------------------------------------------------- Icônes */
+var CIT_BASE = '<path d="M47 16 C46 9 50 4 57 3 L58 8 C54 9 53 12 54 16 Z" fill="#4a8a2e"/><ellipse cx="33" cy="57" rx="22" ry="31" fill="#d9661a" stroke="#8a3c0a" stroke-width="2"/><ellipse cx="67" cy="57" rx="22" ry="31" fill="#d9661a" stroke="#8a3c0a" stroke-width="2"/><ellipse cx="50" cy="57" rx="21" ry="33" fill="#f08a2a" stroke="#8a3c0a" stroke-width="2"/>';
+var ICO = {
+  chauve: ['0 0 100 56', '<path fill="#2b1b3a" stroke="#a78bd0" stroke-width="1.5" d="M50 18 C47 12 45 9 43 5 L44 15 C35 10 22 5 6 7 C12 13 13 20 11 27 C17 23 23 25 26 31 C30 25 36 25 40 29 C42 36 46 42 50 50 C54 42 58 36 60 29 C64 25 70 25 74 31 C77 25 83 23 89 27 C87 20 88 13 94 7 C78 5 65 10 56 15 L57 5 C55 9 53 12 50 18 Z"/><circle cx="46.5" cy="22" r="2.2" fill="#ffd54a"/><circle cx="53.5" cy="22" r="2.2" fill="#ffd54a"/>'],
+  araignee: ['0 0 100 100', '<g stroke="#9a7cb8" stroke-width="4" stroke-linecap="round" fill="none"><path d="M42 50 L24 34 L10 40"/><path d="M42 56 L20 52 L6 62"/><path d="M42 62 L22 70 L12 86"/><path d="M44 66 L32 82 L28 96"/><path d="M58 50 L76 34 L90 40"/><path d="M58 56 L80 52 L94 62"/><path d="M58 62 L78 70 L88 86"/><path d="M56 66 L68 82 L72 96"/></g><ellipse cx="50" cy="60" rx="15" ry="17" fill="#2a1636" stroke="#9a7cb8" stroke-width="2"/><circle cx="50" cy="40" r="10" fill="#3a2048" stroke="#9a7cb8" stroke-width="2"/><circle cx="46" cy="39" r="2.6" fill="#ff3b3b"/><circle cx="54" cy="39" r="2.6" fill="#ff3b3b"/><circle cx="49" cy="34" r="1.4" fill="#ff3b3b"/><circle cx="51" cy="34" r="1.4" fill="#ff3b3b"/>'],
+  hibou: ['0 0 100 100', '<path d="M26 22 L36 34 L64 34 L74 22 L72 40 C82 52 80 80 66 90 L34 90 C20 80 18 52 28 40 Z" fill="#6b4a2e" stroke="#c9a77c" stroke-width="2"/><path d="M36 62 C42 70 58 70 64 62 C62 80 38 80 36 62Z" fill="#c9a77c"/><circle cx="39" cy="46" r="11" fill="#f3ead0"/><circle cx="61" cy="46" r="11" fill="#f3ead0"/><circle cx="39" cy="46" r="6" fill="#f2b51a"/><circle cx="61" cy="46" r="6" fill="#f2b51a"/><circle cx="39" cy="46" r="3" fill="#111"/><circle cx="61" cy="46" r="3" fill="#111"/><path d="M47 54 L53 54 L50 61 Z" fill="#e0a12a"/>'],
+  chat: ['0 0 100 100', '<path fill="#1c1224" stroke="#8d74b0" stroke-width="2" d="M30 92 C26 70 30 52 38 44 L34 20 L46 34 C49 33 53 33 56 34 L68 20 L64 44 C72 52 76 70 72 92 Z"/><path d="M72 88 C86 86 90 72 84 64" stroke="#8d74b0" stroke-width="5" fill="none" stroke-linecap="round"/><ellipse cx="44" cy="46" rx="4" ry="5" fill="#ffd54a"/><ellipse cx="58" cy="46" rx="4" ry="5" fill="#ffd54a"/><rect x="43" y="43" width="2" height="6" fill="#111"/><rect x="57" y="43" width="2" height="6" fill="#111"/>'],
+  corbeau: ['0 0 100 100', '<path fill="#1a1320" stroke="#8d7ea0" stroke-width="2" d="M20 60 C30 40 50 34 64 36 L80 30 L72 42 C78 50 76 62 66 68 L76 90 L70 90 L60 72 L52 74 L56 90 L50 90 L44 74 C34 74 24 70 20 60 Z"/><path d="M80 30 L94 34 L78 38 Z" fill="#c9a24a"/><circle cx="70" cy="38" r="2.6" fill="#ffd54a"/>'],
+  crapaud: ['0 0 100 80', '<ellipse cx="50" cy="52" rx="40" ry="24" fill="#4f7a2f" stroke="#a8d07a" stroke-width="1.5"/><circle cx="32" cy="30" r="11" fill="#5f8c38" stroke="#a8d07a" stroke-width="1.5"/><circle cx="68" cy="30" r="11" fill="#5f8c38" stroke="#a8d07a" stroke-width="1.5"/><circle cx="32" cy="29" r="6" fill="#f2e45a"/><circle cx="68" cy="29" r="6" fill="#f2e45a"/><rect x="31" y="25" width="2" height="8" fill="#111"/><rect x="67" y="25" width="2" height="8" fill="#111"/><path d="M30 58 Q50 68 70 58" stroke="#2c4a17" stroke-width="3" fill="none"/><circle cx="40" cy="46" r="3" fill="#3d6322"/><circle cx="62" cy="50" r="2.5" fill="#3d6322"/>'],
+  fantome: ['0 0 100 100', '<path fill="#e9ecf4" fill-opacity=".92" d="M50 6 C28 6 20 24 20 46 L20 92 L30 84 L40 94 L50 84 L60 94 L70 84 L80 92 L80 46 C80 24 72 6 50 6 Z"/><ellipse cx="40" cy="42" rx="5" ry="8" fill="#1a1020"/><ellipse cx="60" cy="42" rx="5" ry="8" fill="#1a1020"/><ellipse cx="50" cy="62" rx="6" ry="8" fill="#1a1020"/>'],
+  oeil: ['0 0 100 100', '<circle cx="50" cy="50" r="40" fill="#f3eee4" stroke="#bfb3a0" stroke-width="2"/><path d="M14 40 L26 44 L30 38 M86 58 L74 56 L70 62 M20 70 L32 64 M80 30 L70 36" stroke="#c0304a" stroke-width="1.6" fill="none"/><circle cx="54" cy="48" r="17" fill="#4b9a3a"/><circle cx="54" cy="48" r="8" fill="#0d0d0d"/><circle cx="58" cy="43" r="3" fill="#fff"/>'],
+  crane: ['0 0 100 100', '<path d="M50 8 C26 8 14 26 16 46 C17 58 24 63 28 65 L30 80 L70 80 L72 65 C76 63 83 58 84 46 C86 26 74 8 50 8Z" fill="#efe6d2" stroke="#a89a80" stroke-width="2"/><ellipse cx="36" cy="46" rx="9" ry="10" fill="#1b1220"/><ellipse cx="64" cy="46" rx="9" ry="10" fill="#1b1220"/><path d="M50 56 L45 66 L55 66Z" fill="#1b1220"/><path d="M38 80 L38 90 L62 90 L62 80 Z" fill="#efe6d2" stroke="#a89a80" stroke-width="2"/><path d="M44 80 L44 90 M50 80 L50 90 M56 80 L56 90" stroke="#a89a80" stroke-width="2"/>'],
+  chandelle: ['0 0 100 120', '<path class="fl" d="M50 6 C57 17 61 24 57 32 C55 36 45 36 43 32 C39 24 44 17 50 6Z" fill="#ffb63a"/><path class="fl" d="M50 17 C53 23 54 27 52 30 C51 32 49 32 48 30 C46 27 47 23 50 17Z" fill="#fff2a8"/><rect x="49" y="32" width="2" height="6" fill="#444"/><rect x="38" y="38" width="24" height="70" rx="3" fill="#efe6cf"/><path d="M38 42 C42 48 44 42 46 54 C47 60 50 46 52 44 C54 50 58 56 62 42 L62 38 L38 38Z" fill="#fff8e6"/><ellipse cx="50" cy="110" rx="20" ry="5" fill="#8a7a62"/>'],
+  chaudron: ['0 0 100 100', '<circle cx="34" cy="20" r="5" fill="#7be06a" opacity=".8"/><circle cx="58" cy="12" r="4" fill="#7be06a" opacity=".7"/><circle cx="66" cy="24" r="6" fill="#7be06a" opacity=".85"/><path d="M24 94 L32 80 M76 94 L68 80" stroke="#6a5040" stroke-width="5" stroke-linecap="round"/><path d="M14 40 C10 70 26 88 50 88 C74 88 90 70 86 40Z" fill="#1d1622" stroke="#7a6a8a" stroke-width="2"/><ellipse cx="50" cy="40" rx="38" ry="9" fill="#2a2030" stroke="#7a6a8a" stroke-width="2"/><ellipse cx="50" cy="40" rx="32" ry="6" fill="#5fd04a"/><circle cx="40" cy="38" r="4" fill="#8ff07a"/><circle cx="58" cy="40" r="3" fill="#8ff07a"/>'],
+  sucette: ['0 0 100 100', '<rect x="47" y="50" width="6" height="44" rx="3" fill="#d8ccb4"/><circle cx="50" cy="34" r="26" fill="#f39a2a" stroke="#b8600e" stroke-width="2"/><path d="M50 34 m-4 0 a4 4 0 1 1 8 0 a9 9 0 1 1 -18 0 a14 14 0 1 1 28 0 a19 19 0 1 1 -38 0" stroke="#ffd36a" stroke-width="3" fill="none"/>'],
+  plume: ['0 0 100 100', '<path d="M80 8 C52 14 30 40 24 76 L30 78 C40 50 58 30 80 8Z" fill="#3a2e4e" stroke="#a898c8" stroke-width="1.5"/><path d="M80 8 C70 40 50 62 30 78" stroke="#c9b8e8" stroke-width="2" fill="none"/><path d="M24 76 L14 94" stroke="#c9b8e8" stroke-width="3" stroke-linecap="round"/>'],
+  balai: ['0 0 40 120', '<rect x="18" y="0" width="5" height="78" rx="2" fill="#a06a3a"/><rect x="14" y="74" width="13" height="7" fill="#c23b2e"/><path d="M14 80 L27 80 L36 118 L5 118Z" fill="#d9b25e" stroke="#8a6a2a" stroke-width="1.5"/><path d="M12 92 L29 92 M10 104 L31 104" stroke="#8a6a2a" stroke-width="1.5"/>'],
+  bocal: ['0 0 100 110', '<rect x="26" y="4" width="48" height="12" rx="3" fill="#6b4a2e"/><circle cx="30" cy="94" r="8" fill="#e8504a"/><circle cx="48" cy="96" r="8" fill="#f2b51a"/><circle cx="66" cy="94" r="8" fill="#7a3fb0"/><circle cx="40" cy="82" r="7" fill="#5fd04a"/><circle cx="58" cy="82" r="7" fill="#e8741c"/><circle cx="74" cy="80" r="6" fill="#e8504a"/><path d="M22 18 L78 18 C86 24 88 34 88 44 L88 92 C88 102 80 106 70 106 L30 106 C20 106 12 102 12 92 L12 44 C12 34 14 24 22 18Z" fill="#9fc6c0" fill-opacity=".22" stroke="#cfe6e0" stroke-width="2"/>'],
+  sceau: ['0 0 100 100', '<path d="M50 4 C60 8 64 4 72 10 C80 14 82 22 90 28 C94 38 92 44 96 52 C94 62 90 66 88 74 C82 82 76 84 70 92 C60 96 56 94 50 98 C42 94 36 96 28 92 C22 84 16 82 12 74 C8 66 6 60 4 50 C8 42 6 36 10 28 C16 20 20 16 28 10 C36 6 40 6 50 4Z" fill="#8c1d2c"/><circle cx="50" cy="50" r="31" fill="#a8293a" stroke="#6a1220" stroke-width="3"/>'],
+  cadenas: ['0 0 100 100', '<path d="M30 46 L30 30 C30 14 70 14 70 30 L70 46" stroke="#b9a37a" stroke-width="8" fill="none"/><rect x="20" y="44" width="60" height="48" rx="8" fill="#6b5634" stroke="#3a2c18" stroke-width="2"/><circle cx="50" cy="64" r="6" fill="#1a120a"/><rect x="47" y="66" width="6" height="14" fill="#1a120a"/>'],
+  flacon: ['0 0 100 100', '<rect x="42" y="4" width="16" height="10" rx="2" fill="#8a5a32"/><path d="M42 14 L58 14 L58 34 C74 40 84 54 84 68 C84 86 68 96 50 96 C32 96 16 86 16 68 C16 54 26 40 42 34Z" fill="#7a3fb0" fill-opacity=".85" stroke="#d8c8ef" stroke-width="2"/><path d="M24 64 C34 58 66 70 76 62 C78 80 66 90 50 90 C34 90 22 80 24 64Z" fill="#b57cff"/><circle cx="40" cy="52" r="4" fill="#fff" opacity=".5"/>'],
+  'cit-lanterne': ['0 0 100 100', CIT_BASE + '<path d="M30 46 L40 38 L42 50 Z M70 46 L60 38 L58 50 Z" fill="#ffd23f"/><path d="M28 64 L36 70 L42 64 L50 72 L58 64 L64 70 L72 64 L66 78 L34 78 Z" fill="#ffd23f"/>'],
+  'cit-clown': ['0 0 100 100', CIT_BASE + '<path d="M30 46 Q36 38 42 46" stroke="#2a1405" stroke-width="3" fill="none"/><path d="M58 46 Q64 38 70 46" stroke="#2a1405" stroke-width="3" fill="none"/><circle cx="28" cy="58" r="5" fill="#e8504a" opacity=".75"/><circle cx="72" cy="58" r="5" fill="#e8504a" opacity=".75"/><circle cx="50" cy="56" r="7" fill="#e3262b"/><path d="M34 66 Q50 84 66 66 Q50 74 34 66Z" fill="#2a1405"/>'],
+  'cit-peur': ['0 0 100 100', CIT_BASE + '<circle cx="38" cy="46" r="9" fill="#fff"/><circle cx="62" cy="46" r="9" fill="#fff"/><circle cx="38" cy="47" r="3" fill="#111"/><circle cx="62" cy="47" r="3" fill="#111"/><ellipse cx="50" cy="71" rx="8" ry="10" fill="#2a1405"/><path d="M29 33 L43 37 M71 33 L57 37" stroke="#2a1405" stroke-width="2.5"/>'],
+  'cit-frank': ['0 0 100 100', CIT_BASE + '<rect x="20" y="26" width="60" height="10" fill="#7a4a1a" opacity=".5"/><path d="M24 33 L76 33" stroke="#2a1405" stroke-width="2"/><path d="M30 29 L30 37 M38 29 L38 37 M46 29 L46 37 M54 29 L54 37 M62 29 L62 37 M70 29 L70 37" stroke="#2a1405" stroke-width="2"/><path d="M30 50 L44 48 L44 54 L32 54Z M70 50 L56 48 L56 54 L68 54Z" fill="#7be06a"/><path d="M34 70 L66 70 L66 76 L34 76Z" fill="#2a1405"/><path d="M40 70 L40 76 M48 70 L48 76 M56 70 L56 76" stroke="#f08a2a" stroke-width="2"/><rect x="6" y="60" width="9" height="5" fill="#999"/><rect x="85" y="60" width="9" height="5" fill="#999"/>'],
+  'cit-momie': ['0 0 100 100', CIT_BASE + '<path d="M16 40 L84 32 L84 41 L16 49Z M16 60 L84 54 L84 63 L16 69Z M20 78 L80 72 L78 81 L24 87Z" fill="#efe2c2"/><circle cx="38" cy="52" r="4" fill="#ffe14a"/><circle cx="62" cy="51" r="4" fill="#ffe14a"/>'],
+  'cit-sorciere': ['0 0 100 100', CIT_BASE + '<path d="M34 30 Q46 12 56 1 Q58 18 68 30Z" fill="#1d1226" stroke="#7a3fb0" stroke-width="1.5"/><rect x="12" y="27" width="76" height="8" rx="3" fill="#1d1226" stroke="#7a3fb0" stroke-width="1.5"/><rect x="38" y="22" width="26" height="5" fill="#7a3fb0"/><path d="M30 48 L44 52 L32 56Z M70 48 L56 52 L68 56Z" fill="#ffd23f"/><path d="M34 68 Q50 60 66 68 L62 75 L56 70 L50 77 L44 70 L38 75Z" fill="#ffd23f"/>']
+};
+function ico(n, cls) {
+  var d = ICO[n];
+  return '<svg class="ico ' + (cls || '') + '" viewBox="' + d[0] + '" xmlns="http://www.w3.org/2000/svg">' + d[1] + '</svg>';
+}
+
+function sceneSVG() {
+  return '<svg class="decor" viewBox="0 0 600 420" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">' +
+    '<defs><radialGradient id="lueurLune"><stop offset="0" stop-color="#f6e7c8" stop-opacity=".45"/><stop offset="1" stop-color="#f6e7c8" stop-opacity="0"/></radialGradient>' +
+    '<linearGradient id="ciel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#160c22"/><stop offset="1" stop-color="#3a2450"/></linearGradient></defs>' +
+    '<rect width="600" height="420" fill="url(#ciel)"/>' +
+    '<circle cx="410" cy="150" r="170" fill="url(#lueurLune)"/><circle cx="410" cy="150" r="96" fill="#efdfba"/><circle cx="380" cy="128" r="14" fill="#e2cfa4"/><circle cx="442" cy="186" r="10" fill="#e2cfa4"/><circle cx="455" cy="120" r="6" fill="#e2cfa4"/>' +
+    '<ellipse cx="140" cy="90" rx="90" ry="14" fill="#2a1b38" opacity=".7"/><ellipse cx="480" cy="232" rx="110" ry="12" fill="#2a1b38" opacity=".6"/>' +
+    '<path d="M440 92 l7 -5 l4 4 l4 -4 l7 5 l-7 -1 l-4 4 l-4 -4z M470 70 l5 -4 l3 3 l3 -3 l5 4 l-5 -1 l-3 3 l-3 -3z" fill="#0a070d"/>' +
+    '<path d="M0 330 Q150 316 300 332 T600 326 L600 420 L0 420Z" fill="#0d0912"/>' +
+    '<g stroke="#07050a" stroke-linecap="round" fill="none"><path d="M530 335 C526 300 534 270 522 230" stroke-width="14"/><path d="M524 250 C548 234 560 214 586 206" stroke-width="7"/><path d="M522 232 C502 212 494 196 470 190" stroke-width="7"/><path d="M560 220 C566 204 578 196 590 180" stroke-width="4"/><path d="M490 196 C484 180 486 168 476 156" stroke-width="4"/><path d="M528 236 C530 210 540 196 536 170" stroke-width="5"/></g>' +
+    '<path d="M70 335 L70 300 Q85 284 100 300 L100 335Z M118 335 L118 312 Q128 302 138 312 L138 335Z" fill="#1d1626"/><rect x="40" y="306" width="4" height="30" fill="#1d1626"/><rect x="33" y="314" width="18" height="4" fill="#1d1626"/>' +
+    '<g fill="#0a070d"><rect x="190" y="170" width="220" height="165"/><polygon points="176,176 290,96 404,176"/><rect x="232" y="104" width="18" height="44"/><rect x="340" y="80" width="62" height="120"/><polygon points="330,86 371,8 412,86"/></g>' +
+    '<g class="fl" fill="#f5c76a"><rect x="208" y="196" width="24" height="34" rx="12"/><rect x="250" y="196" width="24" height="34" rx="12"/><rect x="208" y="262" width="24" height="34" rx="12"/><rect x="356" y="104" width="30" height="28" rx="14"/><rect x="358" y="150" width="26" height="30" rx="13"/><rect x="362" y="240" width="24" height="34" rx="12"/><circle cx="290" cy="140" r="11"/></g>' +
+    '<path d="M280 335 L280 292 Q300 262 320 292 L320 335Z" fill="#f5c76a" opacity=".9"/><path d="M300 270 L300 335" stroke="#0a070d" stroke-width="3"/><rect x="272" y="333" width="56" height="7" fill="#2a2030"/>' +
+    '<polygon points="284,340 316,340 384,420 216,420" fill="#2c2238"/>' +
+    '</svg>';
+}
+
+/* ---------------------------------------------------------------- Son (synthétisé, aucun fichier) */
+var SON = (function () {
+  var ctx = null, maitre = null, bruit = null, amb = null, actif = true, debloque = false;
+  function go(n, t) { if (n.start) n.start(t); else n.noteOn(t); }
+  function stop(n, t) { try { if (n.stop) n.stop(t); else n.noteOff(t); } catch (e) {} }
+  function init() {
+    if (ctx) { if (ctx.state === 'suspended' && ctx.resume) ctx.resume(); return; }
+    var C = window.AudioContext || window.webkitAudioContext;
+    if (!C) return;
+    try { ctx = new C(); } catch (e) { ctx = null; return; }
+    maitre = ctx.createGain(); maitre.gain.value = actif ? 1 : 0; maitre.connect(ctx.destination);
+    var n = ctx.sampleRate * 2, d, i;
+    bruit = ctx.createBuffer(1, n, ctx.sampleRate); d = bruit.getChannelData(0);
+    for (i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+  }
+  function debloquer() {
+    init();
+    if (!ctx || debloque) return;
+    var b = ctx.createBuffer(1, 1, 22050), s = ctx.createBufferSource();
+    s.buffer = b; s.connect(ctx.destination); go(s, 0); debloque = true;
+    // Page rechargée en plein jeu : l'ambiance demandée avant le premier toucher démarre maintenant.
+    if (enAttente) ambiance(enAttente);
+  }
+  var enAttente = 0;
+  function env(g, t, a, v, dur) { g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(v, t + a); g.gain.exponentialRampToValueAtTime(0.0001, t + dur); }
+  function note(type, f, t, dur, v, f2) {
+    var o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = type; o.frequency.setValueAtTime(f, t);
+    if (f2) o.frequency.exponentialRampToValueAtTime(f2, t + dur);
+    o.connect(g); g.connect(maitre); env(g, t, 0.01, v, dur); go(o, t); stop(o, t + dur + 0.05);
+  }
+  function souffle(t, dur, v, freq, q, f2) {
+    var s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain();
+    s.buffer = bruit; f.type = 'bandpass'; f.frequency.setValueAtTime(freq, t);
+    if (f2) f.frequency.exponentialRampToValueAtTime(f2, t + dur);
+    f.Q.value = q; s.connect(f); f.connect(g); g.connect(maitre); env(g, t, dur * 0.3, v, dur); go(s, t); stop(s, t + dur + 0.05);
+  }
+  var FX = {
+    bon: function (t) { var f = [659.3, 784, 987.8, 1318.5], i; for (i = 0; i < f.length; i++) note('triangle', f[i], t + i * 0.11, 1, 0.11); note('sine', 1975.5, t + 0.45, 1.4, 0.04); },
+    tinte: function (t) { note('triangle', 1046.5, t, 0.6, 0.08); note('sine', 1568, t + 0.06, 0.8, 0.04); },
+    rate: function (t) { note('sawtooth', 160, t, 0.55, 0.06, 55); souffle(t, 0.6, 0.12, 900, 1.4, 260); },
+    tap: function (t) { note('sine', 900, t, 0.05, 0.03); },
+    clic: function (t) { note('square', 2200, t, 0.03, 0.03); note('square', 1400, t + 0.07, 0.04, 0.03); },
+    porte: function (t) {
+      var o = ctx.createOscillator(), l = ctx.createOscillator(), lg = ctx.createGain(), f = ctx.createBiquadFilter(), g = ctx.createGain();
+      o.type = 'sawtooth'; o.frequency.setValueAtTime(70, t); o.frequency.linearRampToValueAtTime(115, t + 1.3);
+      l.type = 'square'; l.frequency.value = 13; lg.gain.value = 28; l.connect(lg); lg.connect(o.frequency);
+      f.type = 'bandpass'; f.frequency.value = 750; f.Q.value = 3;
+      o.connect(f); f.connect(g); g.connect(maitre); env(g, t, 0.2, 0.09, 1.4);
+      go(o, t); go(l, t); stop(o, t + 1.5); stop(l, t + 1.5);
+    },
+    coeur: function (t) { note('sine', 75, t, 0.2, 0.5, 45); note('sine', 68, t + 0.24, 0.22, 0.4, 40); },
+    chuchote: function (t) { souffle(t, 1.5, 0.07, 2600, 7, 4800); souffle(t + 0.5, 1.2, 0.05, 3200, 9, 1900); },
+    bulle: function (t) { note('sine', 260, t, 0.18, 0.12, 640); note('sine', 330, t + 0.12, 0.16, 0.08, 800); },
+    gong: function (t) { note('sine', 110, t, 4, 0.22); note('sine', 220.6, t, 3, 0.1); note('sine', 331.5, t, 2.5, 0.06); note('triangle', 659.3, t + 0.3, 2.5, 0.05); }
+  };
+  function fx(nom) { if (!ctx || !actif) return; try { FX[nom](ctx.currentTime + 0.02); } catch (e) {} }
+  function ambiance(niveau) {
+    if (amb) { try { amb.stop(); } catch (e) {} amb = null; }
+    enAttente = niveau;
+    if (!ctx || !debloque || !niveau) return;
+    var t = ctx.currentTime, noeuds = [], g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(niveau, t + 4); g.connect(maitre);
+    function osc(f, v) { var o = ctx.createOscillator(), og = ctx.createGain(); o.type = 'sine'; o.frequency.value = f; og.gain.value = v; o.connect(og); og.connect(g); go(o, t); noeuds.push(o); }
+    osc(55, 0.035); osc(55.6, 0.03); osc(82.4, 0.018); osc(116.5, 0.006);
+    var s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), sg = ctx.createGain(), l = ctx.createOscillator(), lg = ctx.createGain();
+    s.buffer = bruit; s.loop = true; f.type = 'bandpass'; f.frequency.value = 480; f.Q.value = 0.9; sg.gain.value = 0.05;
+    l.type = 'sine'; l.frequency.value = 0.07; lg.gain.value = 300; l.connect(lg); lg.connect(f.frequency);
+    s.connect(f); f.connect(sg); sg.connect(g); go(s, t); go(l, t); noeuds.push(s); noeuds.push(l);
+    var minuterie = null;
+    function tintement() {
+      minuterie = setTimeout(function () {
+        if (actif && ctx) { var u = ctx.currentTime; note('sine', hasard([1568, 1760, 2093, 1396.9]), u, 3, 0.022 * niveau); note('sine', hasard([1174.7, 1318.5]), u + 0.4, 2.6, 0.015 * niveau); }
+        tintement();
+      }, 12000 + Math.random() * 16000);
+    }
+    tintement();
+    amb = { stop: function () { clearTimeout(minuterie); var u = ctx.currentTime, i; g.gain.cancelScheduledValues(u); g.gain.setValueAtTime(g.gain.value, u); g.gain.linearRampToValueAtTime(0.0001, u + 1); for (i = 0; i < noeuds.length; i++) stop(noeuds[i], u + 1.1); } };
+  }
+  function basculer() { actif = !actif; if (maitre) maitre.gain.value = actif ? 1 : 0; return actif; }
+  return { debloquer: debloquer, fx: fx, ambiance: ambiance, basculer: basculer, actif: function () { return actif; } };
+})();
+document.addEventListener('touchend', SON.debloquer, false);
+document.addEventListener('click', SON.debloquer, false);
+
+/* ---------------------------------------------------------------- Les quatre équipes */
+var SCEAU_TXT = 'Une porte scellée de cire rouge vous barre la route. Le mot qui brise ce sceau a été murmuré à l’équipe {eq}. S’ils ne vous l’ont pas encore apporté, c’est qu’ils sont peut-être coincés… Allez voir si vous pouvez les aider — sans leur donner les réponses.';
+var ACCORD_1 = 'Trouvez d’abord le nom noyau : est-il masculin ou féminin ? singulier ou pluriel ? Tout le groupe du nom s’accorde avec lui.';
+var ACCORD_2 = 'Devant un nom masculin qui commence par une voyelle, « beau » devient « bel », « vieux » devient « vieil » et « nouveau » devient « nouvel ».';
+
+var EQ = {
+  chauve: {
+    nom: 'Chauves-souris', couleur: '#b47cff', icone: 'chauve', piece: 'Le grenier aux potions',
+    chiffre: '3', ingredient: 'Une aile de chauve-souris', ingrIco: 'chauve', vers: 'Par l’aile noire et la lune pâle,',
+    etapes: [
+      { type: 'recit', bouton: 'Monter au grenier', html: '<p>L’escalier du grenier craque à chaque marche. Là-haut, l’air sent la poussière et le soufre. Des chauves-souris dorment, la tête en bas, accrochées aux poutres.</p><p>Sur une table bancale, quatre grimoires sont ouverts. Sur les étagères, des dizaines de bocaux portent des étiquettes à l’écriture pointue.</p><p><i>Parlez doucement. Ne les réveillez pas.</i></p>' },
+      { type: 'choix', titre: 'Les quatre grimoires',
+        consigne: 'Une seule potion vous permettra de sortir du manoir <b>tous ensemble</b> et <b>sans être vus</b>. Lisez attentivement chaque grimoire avant de choisir.',
+        options: [
+          { icone: 'flacon', titre: 'L’élixir de Brume-Grise', texte: 'Une seule gorgée suffit à faire disparaître celui qui la boit… mais le flacon ne contient qu’une seule gorgée.', non: 'Une seule gorgée… pour toute une équipe ? Les autres resteraient bien visibles.' },
+          { icone: 'chat', titre: 'Le philtre du Chat-Fantôme', texte: 'Partagé entre amis, il rend les pas silencieux et les corps aussi pâles que l’air. Les gardiens regardent à travers vous.', bon: true },
+          { icone: 'crane', titre: 'La potion du Tonnerre', texte: 'Elle donne à tout un groupe la force d’ouvrir n’importe quelle porte… dans un vacarme à réveiller tout le quartier.', non: 'Tout le monde sort, oui… mais tout le monde vous entend !' },
+          { icone: 'oeil', titre: 'La tisane de la Chance', texte: 'Toute la tablée devient chanceuse pendant une heure. Rien ne garantit que la chance suffise.', non: 'La chance, ça ne rend personne invisible.' }
+        ],
+        bravo: 'Le philtre du Chat-Fantôme ! Partagé entre amis (tous), il rend silencieux et transparent (sans être vus). Les chauves-souris remuent au plafond…',
+        indices: ['Relisez la question : il faut sortir TOUS, et SANS être vus. Une seule potion remplit les deux conditions.', 'Une potion ne sert qu’à une personne, une autre fait trop de bruit, une autre ne promet rien.'] },
+      { type: 'message', pour: 'araignee', mot: 'CHANDELLE' },
+      { type: 'code', titre: 'Les bocaux du grenier', code: '64357', cadenas: 'Le coffre aux fioles',
+        consigne: 'Voici la recette du philtre du Chat-Fantôme. Trouvez sur l’étagère les bocaux de ses <b>cinq ingrédients</b>, additionnez leurs valeurs : le total ouvre le coffre aux fioles.',
+        html: '<div class="recette carte"><div class="titre">Recette — philtre du Chat-Fantôme</div>' + ico('fantome') + ico('chandelle') + ico('crane') + ico('plume') + ico('oeil') + '</div>' +
+          '<div class="etagere">' +
+          '<div class="pot">' + ico('araignee') + '<div>8 × 10<sup>3</sup></div></div>' +
+          '<div class="pot">' + ico('crane') + '<div>30 dizaines</div></div>' +
+          '<div class="pot">' + ico('sucette') + '<div>9 unités de mille</div></div>' +
+          '<div class="pot">' + ico('chandelle') + '<div>40 centaines</div></div>' +
+          '<div class="pot">' + ico('chaudron') + '<div>70 000</div></div>' +
+          '<div class="pot">' + ico('oeil') + '<div>1+1+1+1+1+1+1</div></div>' +
+          '<div class="pot">' + ico('cit-lanterne') + '<div>2 dizaines de mille</div></div>' +
+          '<div class="pot">' + ico('fantome') + '<div>6 × 10<sup>4</sup></div></div>' +
+          '<div class="pot">' + ico('plume') + '<div>5 dizaines</div></div>' +
+          '</div>',
+        bravo: 'Le coffre s’ouvre dans un nuage de poussière violette. Les fioles sont là… mais leurs étiquettes sont bien mal écrites.',
+        indices: ['Seuls 5 bocaux comptent : ceux dont l’image apparaît dans la recette. Écrivez la valeur de chacun en chiffres avant d’additionner.', 'Le fantôme vaut 60 000. Attention au crâne : 30 dizaines, c’est 300, pas 30 !'] },
+      { type: 'sceau', de: 'hibou', mot: 'LANTERNE', titre: 'La trappe scellée', bravo: 'Le sceau se fend en deux. La trappe s’ouvre sur une petite pièce où brillent cinq chandelles éteintes.',
+        indices: ['Le mot de passe a été murmuré à l’équipe des Hiboux. Allez les voir !'] },
+      { type: 'serie', titre: 'Les étiquettes des fioles',
+        consigne: 'Grisemine écrit ses étiquettes à toute vitesse. Choisissez le mot bien accordé pour chaque fiole : chaque bonne réponse rallume une chandelle.',
+        items: [
+          { q: 'Une potion ___', o: ['amer', 'amère', 'amers'], b: 1 },
+          { q: 'Des crapauds ___', o: ['baveux', 'baveuses', 'baveuse'], b: 0 },
+          { q: 'De ___ chandelles tordues', o: ['vieux', 'vieille', 'vieilles'], b: 2 },
+          { q: 'Ces ailes ___', o: ['noir', 'noirs', 'noires'], b: 2 },
+          { q: 'Un ___ œil globuleux', o: ['beau', 'bel', 'belle'], b: 1 }
+        ],
+        bravo: 'Les cinq chandelles brûlent. Derrière la dernière fiole, quelque chose frémit : une aile de chauve-souris, sèche comme une vieille feuille.',
+        indices: [ACCORD_1, ACCORD_2] },
+      { type: 'fin' }
+    ]
+  },
+
+  araignee: {
+    nom: 'Araignées', couleur: '#5fd35a', icone: 'araignee', piece: 'La remise aux balais',
+    chiffre: '1', ingredient: 'Un fil de toile d’araignée', ingrIco: 'araignee', vers: 'par le fil qui tisse la toile,',
+    etapes: [
+      { type: 'recit', bouton: 'Pousser la porte', html: '<p>La remise aux balais est si pleine de toiles d’araignée qu’on dirait des rideaux. Au mur, la précieuse collection de Grisemine : des balais de toutes les formes, rangés avec un soin maniaque.</p><p>Quelque chose bouge dans le coin sombre. Huit pattes. Peut-être plus.</p><p><i>Grisemine déteste qu’on dérange ses balais.</i></p>' },
+      { type: 'tri', titre: 'Le grand rangement',
+        consigne: 'Grisemine range ses balais selon la construction de leur groupe du nom. Touchez une étiquette, puis la bonne case. Quand tout est rangé, vérifiez.',
+        cats: ['Dét. + N. + Adj.', 'Dét. + N. + N.', 'Dét. + N. + Prép. + N.', 'Dét. + N. + Prép. + GN'],
+        items: [
+          { t: 'un balai tordu', c: 0 }, { t: 'la sorcière ridée', c: 0 },
+          { t: 'un balai fusée', c: 1 }, { t: 'le chat sentinelle', c: 1 },
+          { t: 'le manche en chêne', c: 2 }, { t: 'une toile d’araignée', c: 2 },
+          { t: 'la cape de la sorcière', c: 3 }, { t: 'le grenier de ce vieux manoir', c: 3 }
+        ],
+        bravo: 'Tous les balais sont à leur place. Une toile se déchire… et un murmure s’en échappe.',
+        indices: ['Cachez le déterminant et le nom. Qu’est-ce qui reste ? Un adjectif ? Un autre nom ? Une préposition (de, en, à…) ?', 'Après la préposition : un nom tout seul = Prép. + N. ; un déterminant + un nom = Prép. + GN.'] },
+      { type: 'message', pour: 'citrouille', mot: 'BROUILLARD' },
+      { type: 'couleurs', titre: 'Ma collection de balais',
+        consigne: 'Sous chaque balai, une plaque noire indique une construction. Une seule des deux étiquettes de couleur la respecte — et elle est bien écrite ! Leurs couleurs, de gauche à droite, ouvrent le cadenas.',
+        balais: [
+          { p: 'Dét. + N. + Adj.', a: ['un balai magique', 'rouge'], b: ['un balai de sorcière', 'bleu'] },
+          { p: 'Dét. + N. + Prép. + N.', a: ['une brosse paille', 'vert'], b: ['une brosse en paille', 'violet'] },
+          { p: 'Dét. + Adj. + N.', a: ['une vieille branche', 'bleu'], b: ['une vieil branche', 'rouge'] },
+          { p: 'Dét. + N. + N.', a: ['le balai fantomatique', 'rouge'], b: ['le balai fantôme', 'vert'] },
+          { p: 'Dét. + N. + Prép. + GN', a: ['le poil de sanglier', 'violet'], b: ['le poil de ce vieux sanglier', 'rouge'] },
+          { p: 'Dét. + N. + Adj.', a: ['des balais usé', 'vert'], b: ['des balais usés', 'bleu'] }
+        ],
+        code: ['rouge', 'violet', 'bleu', 'vert', 'rouge', 'bleu'],
+        bravo: 'Clac ! Le cadenas tombe. Derrière les balais, une porte étroite… couverte de cire rouge.',
+        indices: ['Pour chaque balai, une seule étiquette suit la construction de la plaque. Touchez les ronds du cadenas pour changer leur couleur.', 'Balais 3 et 6 : les deux étiquettes ont la même construction. Cherchez celle qui est bien accordée !'] },
+      { type: 'sceau', de: 'chauve', mot: 'CHANDELLE', titre: 'La porte de cire', bravo: 'La cire fond comme une bougie. L’araignée géante descend du plafond… et vous regarde.',
+        indices: ['Le mot de passe a été murmuré à l’équipe des Chauves-souris. Allez les voir !'] },
+      { type: 'construire', titre: 'Le fil de l’araignée',
+        consigne: 'L’araignée a emmêlé les mots. Reconstruisez chaque groupe du nom selon la construction demandée. Attention : un mot de trop se cache dans chaque tas !',
+        items: [
+          { cible: 'Dét. + N. + Adj.', mots: ['crochues', 'ces', 'crochu', 'griffes'], rep: ['ces', 'griffes', 'crochues'] },
+          { cible: 'Dét. + N. + Prép. + N.', mots: ['pointe', 'un', 'pointu', 'à', 'chapeau'], rep: ['un', 'chapeau', 'à', 'pointe'] },
+          { cible: 'Dét. + N. + Prép. + GN', mots: ['araignée', 'de', 'le', 'toile', 'la', 'l’'], rep: ['la', 'toile', 'de', 'l’', 'araignée'] }
+        ],
+        bravo: 'L’araignée recule dans l’ombre et vous laisse un long fil d’argent, solide comme une corde.',
+        indices: ['Commencez toujours par le déterminant, puis le nom noyau. Le reste vient après.', 'Le mot de trop n’est pas bien accordé (crochu, pointu…) ou ne va pas avec le nom (le toile ?).'] },
+      { type: 'fin' }
+    ]
+  },
+
+  citrouille: {
+    nom: 'Citrouilles', couleur: '#ff8a1f', icone: 'cit-lanterne', piece: 'Le jardin des citrouilles',
+    chiffre: '0', ingredient: 'Une graine de citrouille ensorcelée', ingrIco: 'cit-lanterne', vers: 'que la porte s’ouvre… avant minuit !',
+    etapes: [
+      { type: 'recit', bouton: 'Sortir dans le jardin', html: '<p>Le jardin est noyé dans le brouillard. Un arbre mort tend ses branches comme de longs doigts. Dans une brouette, des citrouilles sculptées attendent, leurs visages tournés vers vous.</p><p>Sur la brouette, une lettre encore tiède. Au fond du jardin, un cadenas rouillé ferme la grille.</p><p><i>Les citrouilles, elles, vous regardent déjà.</i></p>' },
+      { type: 'placer', titre: 'La lettre de Grisemine', code: '72158', cadenas: 'Le cadenas de la grille',
+        consigne: 'Lisez la lettre, puis placez chaque citrouille : touchez une citrouille, puis son emplacement. Ensuite, lisez les chiffres de l’emplacement 1 à l’emplacement 5.',
+        lettre: '<p>À mon cher et monstrueux époux,</p><p>Cette année, je veux que notre manoir attire tous les enfants du quartier. J’ai sculpté cinq citrouilles : installe-les pendant que je fais mes courses.</p><ul>' +
+          '<li>Devant l’arbre mort, mets celle qui sort tout juste de son sarcophage.</li>' +
+          '<li>Sur la marche, juste avant d’entrer, je veux la citrouille terrifiée : elle donnera aux visiteurs un avant-goût de leur propre visage une fois à l’intérieur.</li>' +
+          '<li>À droite du chemin, mon portrait. Tu me reconnaîtras à mon chapeau.</li>' +
+          '<li>Tout en haut, la citrouille rapiécée comme un monstre de laboratoire : de si loin, on ne verra pas ses coutures.</li>' +
+          '<li>À gauche du chemin, celle qui fait rire les enfants. Un nez rouge, ça rassure toujours…</li></ul>' +
+          '<p>Ta Grisemine qui t’aime (à sa façon)</p>',
+        citrouilles: [{ id: 'clown', ch: '8' }, { id: 'momie', ch: '7' }, { id: 'frank', ch: '5' }, { id: 'sorciere', ch: '1' }, { id: 'peur', ch: '2' }],
+        spots: [{ n: 1, x: 87.5, y: 82 }, { n: 2, x: 50, y: 75 }, { n: 3, x: 68.5, y: 88 }, { n: 4, x: 61.8, y: 14 }, { n: 5, x: 31.5, y: 88 }],
+        bravo: 'La grille grince et s’entrouvre. Toutes les citrouilles se sont allumées en même temps.',
+        indices: ['« Celle qui sort de son sarcophage », c’est la momie. « Rapiécée comme un monstre de laboratoire » : pensez à Frankenstein.', 'Emplacement 1 = devant l’arbre, 2 = la marche, 3 = à droite du chemin, 4 = tout en haut, 5 = à gauche du chemin.'] },
+      { type: 'message', pour: 'hibou', mot: 'SORTILÈGE' },
+      { type: 'ordre', titre: 'Les bocaux de bonbons volés',
+        consigne: 'Grisemine range toujours ses bocaux du <b>plus petit</b> au <b>plus grand</b> nombre de bonbons. Touchez-les dans cet ordre. Une seule erreur, et ils se remettent en place…',
+        items: [
+          { html: '4 × 10<sup>3</sup><br>+ 2 × 10', l: 'O', v: 4020 },
+          { html: '40 centaines<br>+ 3 dizaines', l: 'M', v: 4030 },
+          { html: '4 × 1 000<br>+ 3 × 100', l: 'B', v: 4300 },
+          { html: '43 centaines<br>+ 5 unités', l: 'R', v: 4305 },
+          { html: '4 dizaines de mille + 3 unités', l: 'E', v: 40003 }
+        ],
+        bravo: 'O-M-B-R-E… Votre ombre s’allonge sur le mur de briques, et pointe vers une petite porte scellée.',
+        indices: ['Transformez chaque bocal en un nombre écrit en chiffres avant de comparer.', '43 centaines = 4 300. 4 dizaines de mille = 40 000.'] },
+      { type: 'sceau', de: 'araignee', mot: 'BROUILLARD', titre: 'La porte du potager', bravo: 'Le sceau éclate. Derrière la porte, une table, une chandelle… et la liste de courses de Grisemine.',
+        indices: ['Le mot de passe a été murmuré à l’équipe des Araignées. Allez les voir !'] },
+      { type: 'erreurs', titre: 'La liste de courses',
+        consigne: 'Grisemine a écrit sa liste à la lueur d’une chandelle et elle a fait <b>5 erreurs d’accord</b> dans les groupes du nom. Touchez les 5 mots mal accordés.',
+        lignes: ['trois citrouilles pourries,', 'deux [crapaud|crapauds] gluants,', 'une araignée [poilu|poilue],', 'des cheveux emmêlés,', 'quatre chandelles [noirs|noires],', 'des souris [grise|grises],', 'un vieil os,', 'dix [ongle|ongles] de fée bien vernis.'],
+        bravo: 'Liste corrigée. Au fond du panier, une graine de citrouille brille d’une lueur orange.',
+        indices: [ACCORD_1, 'Regardez les déterminants : deux, quatre, des, dix… Le nom et l’adjectif doivent-ils porter un s ?'] },
+      { type: 'fin' }
+    ]
+  },
+
+  hibou: {
+    nom: 'Hiboux', couleur: '#4fb0f0', icone: 'hibou', piece: 'La bibliothèque interdite',
+    chiffre: '1', ingredient: 'Une plume de hibou', ingrIco: 'plume', vers: 'par la plume qui veille la nuit,',
+    etapes: [
+      { type: 'recit', bouton: 'Entrer sans bruit', html: '<p>La bibliothèque interdite sent le vieux papier et la cire de chandelle. Tout en haut d’une étagère, un hibou vous fixe sans jamais cligner des yeux.</p><p>Un grimoire est ouvert sur le pupitre… mais une page a été arrachée. Grisemine sera furieuse. Il faut trouver le coupable avant son retour.</p><p><i>Le hibou, lui, a tout vu.</i></p>' },
+      { type: 'choix', titre: 'La page arrachée',
+        consigne: 'Lisez les indices trouvés dans la bibliothèque, puis désignez le coupable.',
+        notes: ['Une plume noire était coincée entre deux pages du grimoire.', 'Sur la poussière de l’étagère : de fines traces de griffes.', 'Le voleur est entré par la lucarne du troisième étage. Aucun arbre, aucun balcon, aucune échelle ne permet d’y grimper.'],
+        options: [
+          { icone: 'chat', titre: 'Minuit, le chat noir', texte: 'Des griffes acérées. Il grimpe partout… mais il ne vole pas. Il perd des poils, jamais de plumes.', non: 'Un chat a des griffes, mais comment serait-il monté jusqu’à la lucarne ? Et la plume ?' },
+          { icone: 'corbeau', titre: 'Croa, le corbeau', texte: 'Des ailes, des pattes griffues, et une passion pour les objets qui brillent.', bon: true },
+          { icone: 'crapaud', titre: 'Baveux, le crapaud', texte: 'Il saute très haut… pour un crapaud. Il laisse partout des traces humides.', non: 'Un crapaud n’a ni plumes ni griffes, et il ne vole pas.' },
+          { icone: 'fantome', titre: 'Blafard, le fantôme', texte: 'Il traverse les murs et flotte dans les airs, sans jamais rien toucher.', non: 'Un fantôme ne laisse aucune trace dans la poussière… et encore moins une plume.' }
+        ],
+        bravo: 'Le corbeau ! Il a volé jusqu’à la lucarne, laissé des traces de griffes… et perdu une plume. Le hibou hoche la tête, lentement.',
+        indices: ['Chaque indice élimine au moins un suspect. Prenez-les un par un.', 'Qui peut entrer par une lucarne très haute ? Qui perd des plumes ?'] },
+      { type: 'message', pour: 'chauve', mot: 'LANTERNE' },
+      { type: 'serie', titre: 'Le grimoire à corriger', lettres: true,
+        consigne: 'Grisemine a griffonné dans son grimoire. Chaque mot bien accordé révèle une lettre. Ensemble, elles forment un mot qu’elle adore.',
+        items: [
+          { q: 'Les ___ couloirs', o: ['sombre', 'sombres'], b: 1, l: 'M' },
+          { q: 'Une ___ armoire', o: ['vieil', 'vieille', 'vieux'], b: 1, l: 'I' },
+          { q: 'Des grimoires ___', o: ['poussiéreux', 'poussiéreuse', 'poussiéreuses'], b: 0, l: 'N' },
+          { q: 'Cette ___ chouette', o: ['beau', 'bel', 'belle'], b: 2, l: 'U' },
+          { q: 'Des pages ___', o: ['jaunis', 'jaunies', 'jauni'], b: 1, l: 'I' },
+          { q: 'Un ___ ami', o: ['nouveau', 'nouvel', 'nouvelle'], b: 1, l: 'T' }
+        ],
+        bravo: 'MINUIT. L’heure où Grisemine rentre toujours… Le pupitre se met à trembler.',
+        indices: [ACCORD_1, ACCORD_2] },
+      { type: 'sceau', de: 'citrouille', mot: 'SORTILÈGE', titre: 'Le pupitre scellé', bravo: 'Le sceau se brise avec un bruit d’os sec. Le tiroir du pupitre s’ouvre sur le catalogue de la bibliothèque.',
+        indices: ['Le mot de passe a été murmuré à l’équipe des Citrouilles. Allez les voir !'] },
+      { type: 'serie', titre: 'Le catalogue maudit',
+        consigne: 'Les livres sont rangés selon la construction de leur titre. Pour chaque rayon, trouvez le bon livre.',
+        items: [
+          { q: 'Rayon <b>Dét. + N. + Prép. + GN</b>', o: ['La cuisine maudite', 'La cuisine de sorcière', 'La cuisine de la sorcière', 'La cuisine fantôme'], b: 2 },
+          { q: 'Rayon <b>Dét. + N. + N.</b>', o: ['Le chat endormi', 'Le chat vampire', 'Le chat de Grisemine', 'Le chat de la voisine'], b: 1 },
+          { q: 'Rayon <b>Dét. + N. + Prép. + N.</b>', o: ['Une soupe brûlante', 'Une soupe de la veille', 'Une soupe surprise', 'Une soupe de citrouille'], b: 3 },
+          { q: 'Rayon <b>Dét. + N. + Adj.</b>', o: ['Les nuits sans lune', 'Les nuits glaciales', 'Les nuits de novembre', 'Les nuits d’octobre'], b: 1 }
+        ],
+        bravo: 'Le dernier livre glisse de l’étagère. Une plume grise tombe de ses pages… et le hibou ferme enfin les yeux.',
+        indices: ['Cachez le déterminant et le nom noyau avec votre doigt : qu’est-ce qui vient après ?', 'Prép. + GN : la préposition est suivie d’un déterminant ET d’un nom (de la sorcière). Prép. + N. : seulement un nom (de citrouille).'] },
+      { type: 'fin' }
+    ]
+  }
+};
+var ORDRE_EQ = ['chauve', 'araignee', 'citrouille', 'hibou'];
+var COULEURS = { rouge: '#ff5a4f', bleu: '#5aa8ff', vert: '#5fd35a', violet: '#c08bff' };
+var PALETTE = ['rouge', 'bleu', 'vert', 'violet'];
+var MOQUERIES = ['Hé hé hé… pas tout à fait.', 'Le manoir grince de plaisir…', 'Quelque chose a ricané dans le mur.', 'Les chandelles vacillent… Mauvaise réponse.', 'Le chat noir vous fixe. Il n’est pas impressionné.', 'Une voix chuchote : « Encore… »', 'Un courant d’air glacé vous frôle la nuque.'];
+var BRAVOS = ['Le sceau se brise.', 'Un cliquetis dans le mur…', 'La serrure cède.', 'Le manoir frissonne.'];
+var CHUCHOTEMENTS = ['Je vous entends…', 'Mes chandelles me racontent tout.', 'Plus que quelques minutes, mes petits…', 'Qui a touché à mes grimoires ?', 'Le chat noir compte les enfants…', 'J’ai presque fini mes courses…', 'Ne réveillez pas ce qui dort au grenier.', 'Je sens une odeur de bonbons…'];
+
+/* ---------------------------------------------------------------- État */
+var S = lire(CLE) || { eq: null, etape: 0, plumes: 3, ind: {} };
+function sauver() { ecrire(CLE, S); }
+var app = document.getElementById('app');
+
+/* ---------------------------------------------------------------- Ambiance visuelle */
+var evT = null, evMode = null;
+function evenements(m) {
+  evMode = m; clearTimeout(evT);
+  if (m === 'equipe' || m === 'tni') planifier();
+}
+function planifier() {
+  var d = evMode === 'tni' ? 16000 + Math.random() * 22000 : 28000 + Math.random() * 40000;
+  evT = setTimeout(function () { try { evenement(); } catch (e) {} planifier(); }, d);
+}
+function ajouter(el, duree) { document.body.appendChild(el); setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, duree); }
+function evenement() {
+  var t = evMode === 'tni' ? hasard(['chauve', 'yeux', 'eclair', 'chuchot', 'yeux', 'chauve', 'araignee']) : hasard(['yeux', 'araignee', 'yeux', 'chuchot']);
+  var el = document.createElement('div');
+  if (t === 'yeux') {
+    el.className = 'yeux'; el.innerHTML = '<i></i><i></i>';
+    el.style.left = (Math.random() < 0.5 ? 2 + Math.random() * 10 : 82 + Math.random() * 10) + '%';
+    el.style.top = (25 + Math.random() * 60) + '%';
+    ajouter(el, 4400);
+  } else if (t === 'araignee') {
+    el.className = 'descente'; el.innerHTML = '<i></i>' + ico('araignee');
+    el.style.left = (72 + Math.random() * 22) + '%';
+    ajouter(el, 10200);
+  } else if (t === 'chauve') {
+    el.className = 'vol'; el.innerHTML = ico('chauve');
+    el.style.top = (8 + Math.random() * 30) + '%';
+    ajouter(el, 7200);
+  } else if (t === 'eclair') {
+    var e = $('#eclair'); e.classList.remove('flash'); void e.offsetWidth; e.classList.add('flash');
+  } else {
+    el.className = 'chuchot'; el.innerHTML = hasard(CHUCHOTEMENTS);
+    el.style.left = (5 + Math.random() * 40) + '%';
+    el.style.top = (20 + Math.random() * 55) + '%';
+    SON.fx('chuchote');
+    ajouter(el, 6200);
+  }
+}
+
+/* ---------------------------------------------------------------- Outils d'écran */
+var murT = null;
+function murmure(txt) {
+  var m = $('#murmure');
+  m.firstChild.innerHTML = txt; m.classList.add('vu');
+  clearTimeout(murT); murT = setTimeout(function () { m.classList.remove('vu'); }, 3200);
+}
+function voile(html, gestion) {
+  var v = document.createElement('div');
+  v.className = 'voile'; v.innerHTML = '<div class="boite">' + html + '</div>';
+  v.onclick = function (e) { var t = cible(e, v); if (t) gestion(action(t), t, v); };
+  document.body.appendChild(v);
+  return v;
+}
+function fermer(v) { if (v && v.parentNode) v.parentNode.removeChild(v); }
+function rate(el, msg) { SON.fx('rate'); secouer(el); murmure(msg || hasard(MOQUERIES)); }
+function titre(et) { return '<h2>' + et.titre + '</h2>' + (et.consigne ? '<p class="consigne">' + et.consigne + '</p>' : ''); }
+function mode(m) {
+  document.body.className = 'mode-' + m;
+  evenements(m);
+  SON.ambiance(m === 'equipe' ? 0.7 : (m === 'tni' ? 1.3 : 0));
+}
+
+/* ---------------------------------------------------------------- Accueil */
+function accueil() {
+  mode('accueil');
+  var h = '<div class="defile"><div class="page accueil apparait"><div class="lune-acc">' + ico('chauve') + '</div>' +
+    '<h1 class="lueur">Le manoir<br>de Grisemine</h1><p class="sous">Un jeu d’évasion d’Halloween pour toute la classe</p><div class="choix-eq">';
+  for (var i = 0; i < ORDRE_EQ.length; i++) {
+    var e = EQ[ORDRE_EQ[i]];
+    h += '<div class="eq-btn" data-a="eq" data-id="' + ORDRE_EQ[i] + '" style="border-color:' + e.couleur + '">' + ico(e.icone) + '<b style="color:' + e.couleur + '">' + e.nom + '</b><small>' + e.piece + '</small></div>';
+  }
+  h += '</div><div class="liens"><span class="btn btn-sec" data-a="tni">Tableau de la classe (TNI)</span><span class="btn btn-sec" data-a="guide">Guide de l’enseignant</span></div></div></div>';
+  app.innerHTML = h;
+  app.onclick = function (ev) {
+    var t = cible(ev, app), a = action(t);
+    if (a === 'eq') {
+      var id = t.getAttribute('data-id'), e = EQ[id];
+      voile(ico(e.icone, 'msg-ico') + '<div class="titre-voile" style="color:' + e.couleur + '">Équipe des ' + e.nom + '</div><p>Cette tablette appartiendra à votre équipe jusqu’à la fin du jeu. Vous fouillerez <b>' + e.piece.toLowerCase() + '</b>.</p><span class="btn" data-a="oui" style="border-color:' + e.couleur + '">C’est nous !</span><span class="btn btn-sec" data-a="non">Retour</span>', function (a2, t2, v) {
+        fermer(v);
+        if (a2 === 'oui') { S = { eq: id, etape: 0, plumes: 3, ind: {} }; sauver(); SON.fx('porte'); equipe(); }
+      });
+    } else if (a === 'tni') tni();
+    else if (a === 'guide') guide();
+  };
+}
+
+/* ---------------------------------------------------------------- Écran d'équipe */
+var tapN = 0, tapT = 0;
+function enigmes(eq) {
+  var r = [], i, ty;
+  for (i = 0; i < eq.etapes.length; i++) { ty = eq.etapes[i].type; if (ty !== 'recit' && ty !== 'message' && ty !== 'fin') r.push(i); }
+  return r;
+}
+function entete(eq) {
+  var en = enigmes(eq), p = '', i;
+  for (i = 0; i < en.length; i++) p += ico('chandelle', en[i] < S.etape ? 'on' : '');
+  return '<div id="entete"><div class="blason" data-a="blason" style="border-color:' + eq.couleur + '">' + ico(eq.icone) + '</div>' +
+    '<div class="ent-titre"><b style="color:' + eq.couleur + '">' + eq.piece + '</b><small>Équipe des ' + eq.nom + '</small></div>' +
+    '<div class="progres">' + p + '</div>' +
+    '<div class="btn-mini" data-a="indice">' + ico('plume') + '× ' + S.plumes + '</div>' +
+    '<div class="btn-mini" data-a="son">' + (SON.actif() ? 'Son' : 'Muet') + '</div></div>';
+}
+function equipe() {
+  var eq = EQ[S.eq];
+  if (!eq) { accueil(); return; }
+  if (S.etape >= eq.etapes.length) S.etape = eq.etapes.length - 1;
+  if (document.body.className !== 'mode-equipe') mode('equipe');
+  var et = eq.etapes[S.etape];
+  app.innerHTML = entete(eq) + '<div class="defile" id="defile"><div class="page" id="zone"></div></div>';
+  app.onclick = function (ev) {
+    var t = cible(ev, $('#entete')), a = action(t);
+    if (a === 'blason') blason();
+    else if (a === 'indice') indice();
+    else if (a === 'son') { SON.basculer(); t.innerHTML = SON.actif() ? 'Son' : 'Muet'; }
+  };
+  RENDU[et.type](et, $('#zone'), eq);
+}
+function avancer() { S.etape++; sauver(); SON.fx('porte'); equipe(); }
+function reussir(msg) {
+  SON.fx('bon');
+  voile('<div class="titre-voile">' + hasard(BRAVOS) + '</div><p>' + (msg || '') + '</p><span class="btn" data-a="suite">Continuer</span>', function (a, t, v) {
+    if (a === 'suite') { fermer(v); avancer(); }
+  });
+}
+function indice() {
+  var eq = EQ[S.eq], et = eq.etapes[S.etape], k = S.ind[S.etape] || 0;
+  if (!et.indices) { murmure('Pas de plume nécessaire ici : avancez !'); return; }
+  function montrer(n) {
+    var h = '<div class="titre-voile">Indices</div>', i;
+    for (i = 0; i < n; i++) h += '<div class="indice">' + et.indices[i] + '</div>';
+    if (n < et.indices.length) h += '<p style="font-size:16px;opacity:.7">Il reste ' + (et.indices.length - n) + ' indice(s) pour cette énigme.</p>';
+    h += '<span class="btn" data-a="ok">Fermer</span>';
+    voile(h, function (a, t, v) { if (a === 'ok') fermer(v); });
+  }
+  if (k >= et.indices.length) { montrer(k); return; }
+  if (S.plumes <= 0) {
+    if (k > 0) montrer(k); else murmure('Plus de plumes de corbeau… Demandez à votre enseignant(e).');
+    return;
+  }
+  voile(ico('plume', 'msg-ico') + '<div class="titre-voile">Brûler une plume ?</div><p>Chaque plume de corbeau révèle un indice. Il vous en reste <b>' + S.plumes + '</b> pour tout le jeu.</p>' +
+    '<span class="btn" data-a="oui">Brûler une plume</span>' + (k > 0 ? '<span class="btn btn-sec" data-a="revoir">Revoir mes indices</span>' : '') + '<span class="btn btn-sec" data-a="non">Non</span>', function (a, t, v) {
+    fermer(v);
+    if (a === 'oui') { S.plumes--; S.ind[S.etape] = k + 1; sauver(); SON.fx('chuchote'); equipe(); montrer(k + 1); }
+    else if (a === 'revoir') montrer(k);
+  });
+}
+function blason() {
+  var n = Date.now();
+  if (n - tapT > 1500) tapN = 0;
+  tapT = n; tapN++;
+  if (tapN < 5) return;
+  tapN = 0;
+  var c = window.prompt('Code de l’enseignant');
+  if (c !== CODE_PROF) return;
+  voile('<div class="titre-voile">Menu de l’enseignant</div><p>Étape ' + (S.etape + 1) + ' sur ' + EQ[S.eq].etapes.length + ' — ' + S.plumes + ' plume(s)</p>' +
+    '<span class="btn" data-a="passer">Passer cette étape</span><span class="btn" data-a="reculer">Reculer d’une étape</span><br>' +
+    '<span class="btn" data-a="plumes">Redonner 3 plumes</span><span class="btn" data-a="changer">Changer d’équipe</span><br>' +
+    '<span class="btn btn-sec" data-a="zero">Recommencer cette équipe</span><span class="btn btn-sec" data-a="non">Fermer</span>', function (a, t, v) {
+    fermer(v);
+    if (a === 'passer' && S.etape < EQ[S.eq].etapes.length - 1) { S.etape++; sauver(); equipe(); }
+    else if (a === 'reculer' && S.etape > 0) { S.etape--; sauver(); equipe(); }
+    else if (a === 'plumes') { S.plumes += 3; sauver(); equipe(); }
+    else if (a === 'changer') { S = { eq: null, etape: 0, plumes: 3, ind: {} }; sauver(); accueil(); }
+    else if (a === 'zero') { S = { eq: S.eq, etape: 0, plumes: 3, ind: {} }; sauver(); equipe(); }
+  });
+}
+
+/* Cadenas à chiffres, partagé par les équipes et le Tableau */
+function cadenas(el, code, ok, label) {
+  var n = code.length, saisie = '', bloque = false, h, i;
+  var touches = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'Effacer', '0', ''];
+  h = '<div class="cad">' + ico('cadenas', 'cad-ico') + '<div class="cad-t">' + (label || 'Cadenas') + '</div><div class="cases">';
+  for (i = 0; i < n; i++) h += '<span class="case"></span>';
+  h += '</div><div class="pave">';
+  for (i = 0; i < touches.length; i++) h += '<button type="button" data-k="' + touches[i] + '" class="' + (touches[i].length > 1 ? 'petit' : (touches[i] ? '' : 'vide')) + '">' + touches[i] + '</button>';
+  h += '</div></div>';
+  el.innerHTML = h;
+  var cases = el.querySelectorAll('.case'), boite = el.querySelector('.cases');
+  function maj() { for (var j = 0; j < n; j++) cases[j].innerHTML = saisie.charAt(j); }
+  el.onclick = function (e) {
+    var t = e.target;
+    while (t && t !== el && t.tagName !== 'BUTTON') t = t.parentNode;
+    if (!t || t === el || bloque) return;
+    var k = t.getAttribute('data-k');
+    if (!k) return;
+    if (k === 'Effacer') saisie = saisie.slice(0, -1);
+    else if (saisie.length < n) { saisie += k; SON.fx('tap'); }
+    maj();
+    if (saisie.length === n) {
+      bloque = true;
+      if (saisie === code) { boite.classList.add('ouvert'); SON.fx('clic'); setTimeout(ok, 700); }
+      else setTimeout(function () { rate(boite, 'Le cadenas ne bouge pas. ' + hasard(MOQUERIES)); saisie = ''; maj(); bloque = false; }, 350);
+    }
+  };
+}
+
+/* ---------------------------------------------------------------- Types d'énigmes */
+var RENDU = {
+  recit: function (et, z, eq) {
+    z.innerHTML = '<div class="recit apparait"><div class="recit-ico">' + ico(eq.icone) + '</div><h2 class="lueur">' + eq.piece + '</h2>' + et.html +
+      '<div class="centre"><span class="btn" data-a="go" style="border-color:' + eq.couleur + '">' + et.bouton + '</span></div></div>';
+    z.onclick = function (e) { if (action(cible(e, z)) === 'go') avancer(); };
+  },
+
+  choix: function (et, z) {
+    var h = titre(et), i, o, fini = false;
+    if (et.notes) { h += '<div class="notes">'; for (i = 0; i < et.notes.length; i++) h += '<div class="note">' + ico('plume') + et.notes[i] + '</div>'; h += '</div>'; }
+    h += '<div class="opts">';
+    for (i = 0; i < et.options.length; i++) { o = et.options[i]; h += '<div class="opt carte" data-a="opt" data-i="' + i + '">' + ico(o.icone) + '<b>' + o.titre + '</b><p>' + o.texte + '</p></div>'; }
+    z.innerHTML = '<div class="apparait">' + h + '</div></div>';
+    z.onclick = function (e) {
+      var t = cible(e, z);
+      if (fini || action(t) !== 'opt') return;
+      var op = et.options[+t.getAttribute('data-i')];
+      if (op.bon) { fini = true; t.classList.add('choisi'); setTimeout(function () { reussir(et.bravo); }, 600); }
+      else rate(t, op.non);
+    };
+  },
+
+  serie: function (et, z) {
+    var k = 0, n = et.items.length, bloque = false;
+    function rendu() {
+      var h = titre(et) + '<div class="bougies">', i, it = et.items[k];
+      for (i = 0; i < n; i++) h += ico('chandelle', i < k ? 'on' : '');
+      h += '</div>';
+      if (et.lettres) { h += '<div class="lettres">'; for (i = 0; i < n; i++) h += '<span>' + (i < k ? et.items[i].l : '') + '</span>'; h += '</div>'; }
+      h += '<div class="question apparait">' + it.q.replace('___', '<span class="trou">?</span>') + '</div><div class="reps">';
+      for (i = 0; i < it.o.length; i++) h += '<span class="btn rep" data-a="rep" data-j="' + i + '">' + it.o[i] + '</span>';
+      z.innerHTML = h + '</div>';
+    }
+    rendu();
+    z.onclick = function (e) {
+      var t = cible(e, z);
+      if (bloque || action(t) !== 'rep') return;
+      var j = +t.getAttribute('data-j'), it = et.items[k];
+      if (j === it.b) {
+        bloque = true; SON.fx('tinte'); t.classList.add('juste');
+        var q = z.querySelector('.trou'); if (q) q.innerHTML = it.o[j];
+        if (et.lettres) z.querySelectorAll('.lettres span')[k].innerHTML = it.l;
+        z.querySelectorAll('.bougies svg')[k].setAttribute('class', 'ico on');
+        k++;
+        setTimeout(function () { bloque = false; if (k >= n) reussir(et.bravo); else rendu(); }, 800);
+      } else rate(t);
+    };
+  },
+
+  code: function (et, z) {
+    z.innerHTML = '<div class="apparait">' + titre(et) + et.html + '<div id="cad"></div></div>';
+    cadenas($('#cad'), et.code, function () { reussir(et.bravo); }, et.cadenas);
+  },
+
+  tri: function (et, z) {
+    var items = melange(et.items), pos = [], sel = -1, i;
+    for (i = 0; i < items.length; i++) pos.push(-1);
+    function puce(j) { return '<span class="puce' + (sel === j ? ' sel' : '') + '" data-a="puce" data-i="' + j + '">' + items[j].t + '</span>'; }
+    function rendu() {
+      var h = titre(et) + '<div class="plateau" data-a="plateau">', reste = 0, c, j, dedans;
+      for (j = 0; j < items.length; j++) if (pos[j] < 0) { h += puce(j); reste++; }
+      if (!reste) h += '<span class="vide-txt">Tout est rangé. Vérifiez !</span>';
+      h += '</div><div class="bacs">';
+      for (c = 0; c < et.cats.length; c++) {
+        h += '<div class="bac" data-a="bac" data-c="' + c + '"><div class="bac-t">' + et.cats[c] + '</div>';
+        dedans = 0;
+        for (j = 0; j < items.length; j++) if (pos[j] === c) { h += puce(j); dedans++; }
+        if (!dedans) h += '<span class="vide-txt">(vide)</span>';
+        h += '</div>';
+      }
+      h += '</div>';
+      if (!reste) h += '<div class="centre"><span class="btn" data-a="verif">Vérifier le rangement</span></div>';
+      z.innerHTML = h;
+    }
+    rendu();
+    z.onclick = function (e) {
+      var t = cible(e, z), a = action(t);
+      if (a === 'puce') { var j = +t.getAttribute('data-i'); sel = sel === j ? -1 : j; SON.fx('tap'); rendu(); }
+      else if (a === 'bac' && sel >= 0) { pos[sel] = +t.getAttribute('data-c'); sel = -1; SON.fx('tap'); rendu(); }
+      else if (a === 'plateau' && sel >= 0) { pos[sel] = -1; sel = -1; rendu(); }
+      else if (a === 'verif') {
+        var faux = 0;
+        for (var k = 0; k < items.length; k++) if (pos[k] !== items[k].c) { pos[k] = -1; faux++; }
+        if (!faux) reussir(et.bravo);
+        else { rendu(); rate(z.querySelector('.plateau'), faux + (faux > 1 ? ' étiquettes étaient mal rangées… elles retournent au tas.' : ' étiquette était mal rangée… elle retourne au tas.')); }
+      }
+    };
+  },
+
+  couleurs: function (et, z) {
+    var choix = [], i, b;
+    for (i = 0; i < et.balais.length; i++) choix.push(-1);
+    var h = titre(et) + '<div class="balais">';
+    for (i = 0; i < et.balais.length; i++) {
+      b = et.balais[i];
+      h += '<div class="balai"><span class="n">' + (i + 1) + '</span>' + ico('balai') + '<div class="plaque">' + b.p + '</div>' +
+        '<div class="gn" style="color:' + COULEURS[b.a[1]] + '">' + b.a[0] + '</div><div class="gn" style="color:' + COULEURS[b.b[1]] + '">' + b.b[0] + '</div></div>';
+    }
+    h += '</div><div class="cad">' + ico('cadenas', 'cad-ico') + '<div class="cad-t">Cadenas aux couleurs</div><div style="font-size:15px;opacity:.75">Touchez un rond pour changer sa couleur (balai 1 à 6)</div><div class="pastilles">';
+    for (i = 0; i < et.balais.length; i++) h += '<span class="pastille" data-a="past" data-i="' + i + '">' + (i + 1) + '</span>';
+    h += '</div><span class="btn" data-a="ouvrir">Ouvrir le cadenas</span></div>';
+    z.innerHTML = '<div class="apparait">' + h + '</div>';
+    z.onclick = function (e) {
+      var t = cible(e, z), a = action(t);
+      if (a === 'past') {
+        var j = +t.getAttribute('data-i');
+        choix[j] = (choix[j] + 1) % PALETTE.length;
+        t.style.background = COULEURS[PALETTE[choix[j]]]; t.style.borderColor = '#fff'; t.innerHTML = '';
+        SON.fx('tap');
+      } else if (a === 'ouvrir') {
+        for (var k = 0; k < choix.length; k++) if (choix[k] < 0) { murmure('Il manque des couleurs au cadenas.'); return; }
+        for (k = 0; k < choix.length; k++) if (PALETTE[choix[k]] !== et.code[k]) { rate(z.querySelector('.pastilles'), 'Le cadenas reste fermé. ' + hasard(MOQUERIES)); return; }
+        SON.fx('clic'); reussir(et.bravo);
+      }
+    };
+  },
+
+  placer: function (et, z) {
+    var place = {}, sel = null, chiffres = {}, i;
+    for (i = 0; i < et.citrouilles.length; i++) chiffres[et.citrouilles[i].id] = et.citrouilles[i].ch;
+    z.innerHTML = '<div class="apparait">' + titre(et) + '<div class="deux"><div class="lettre carte">' + et.lettre + '</div><div id="jardin"></div></div><div id="cad"></div></div>';
+    var jardin = $('#jardin');
+    function occupe(id) { for (var n in place) if (place.hasOwnProperty(n) && place[n] === id) return true; return false; }
+    function rendu() {
+      var h = '<div class="scene">' + sceneSVG(), j, s, p;
+      for (j = 0; j < et.spots.length; j++) {
+        s = et.spots[j]; p = place[s.n];
+        h += '<div class="spot' + (p ? ' plein' : '') + '" data-a="spot" data-n="' + s.n + '" style="left:' + s.x + '%;top:' + s.y + '%"><span class="num">' + s.n + '</span>' + (p ? ico('cit-' + p) + '<span class="chf">' + chiffres[p] + '</span>' : '') + '</div>';
+      }
+      h += '</div><div class="plateau-cit">';
+      for (j = 0; j < et.citrouilles.length; j++) {
+        p = et.citrouilles[j];
+        if (!occupe(p.id)) h += '<div class="cit' + (sel === p.id ? ' sel' : '') + '" data-a="cit" data-id="' + p.id + '">' + ico('cit-' + p.id) + '<span class="chf">' + p.ch + '</span></div>';
+      }
+      jardin.innerHTML = h + '</div>';
+    }
+    rendu();
+    jardin.onclick = function (e) {
+      var t = cible(e, jardin), a = action(t);
+      if (a === 'cit') { var id = t.getAttribute('data-id'); sel = sel === id ? null : id; SON.fx('tap'); rendu(); }
+      else if (a === 'spot') {
+        var n = t.getAttribute('data-n');
+        if (sel) { place[n] = sel; sel = null; SON.fx('bulle'); }
+        else if (place[n]) delete place[n];
+        rendu();
+      }
+    };
+    cadenas($('#cad'), et.code, function () { reussir(et.bravo); }, et.cadenas);
+  },
+
+  ordre: function (et, z) {
+    var items = melange(et.items), tri = et.items.slice().sort(function (a, b) { return a.v - b.v; }), k = 0, pris = {}, bloque = false;
+    function rendu() {
+      var h = titre(et) + '<div class="lettres">', i;
+      for (i = 0; i < tri.length; i++) h += '<span>' + (i < k ? tri[i].l : '') + '</span>';
+      h += '</div><div class="bocaux">';
+      for (i = 0; i < items.length; i++) h += '<div class="bocal' + (pris[i] ? ' pris' : '') + '" data-a="bocal" data-i="' + i + '">' + ico('bocal') + '<div class="etq">' + items[i].html + '</div>' + (pris[i] ? '<span class="rang">' + pris[i] + '</span>' : '') + '</div>';
+      z.innerHTML = h + '</div>';
+    }
+    rendu();
+    z.onclick = function (e) {
+      var t = cible(e, z);
+      if (bloque || action(t) !== 'bocal') return;
+      var i = +t.getAttribute('data-i');
+      if (pris[i]) return;
+      if (items[i] === tri[k]) {
+        k++; pris[i] = k; SON.fx('tinte'); rendu();
+        if (k === tri.length) { bloque = true; setTimeout(function () { reussir(et.bravo); }, 600); }
+      } else {
+        bloque = true; rate(t, 'Les bocaux tremblent… et se remettent en place.');
+        setTimeout(function () { k = 0; pris = {}; bloque = false; rendu(); }, 700);
+      }
+    };
+  },
+
+  erreurs: function (et, z) {
+    var mots = [], total = 0, trouves = 0, h = titre(et) + '<div class="liste carte"><div class="titre">Liste de courses de Grisemine</div>', i, j, toks, m;
+    for (i = 0; i < et.lignes.length; i++) {
+      toks = et.lignes[i].split(' ');
+      for (j = 0; j < toks.length; j++) {
+        m = toks[j].match(/^\[([^|]+)\|([^\]]+)\](.*)$/);
+        if (m) { mots.push({ t: m[1], c: m[2], err: true }); total++; h += '<span class="mot" data-a="mot" data-i="' + (mots.length - 1) + '">' + m[1] + '</span>' + m[3] + ' '; }
+        else { mots.push({ t: toks[j] }); h += '<span class="mot" data-a="mot" data-i="' + (mots.length - 1) + '">' + toks[j] + '</span> '; }
+      }
+      h += '<br>';
+    }
+    h += '</div><div class="compteur">Erreurs trouvées : <b id="cpt">0</b> / ' + total + '</div>';
+    z.innerHTML = '<div class="apparait">' + h + '</div>';
+    z.onclick = function (e) {
+      var t = cible(e, z);
+      if (action(t) !== 'mot') return;
+      var w = mots[+t.getAttribute('data-i')];
+      if (w.err) {
+        if (w.vu) return;
+        w.vu = true; trouves++;
+        t.className = 'mot trouve'; t.innerHTML = '<s>' + w.t + '</s> <b>' + w.c + '</b>';
+        $('#cpt').innerHTML = trouves; SON.fx('tinte');
+        if (trouves === total) setTimeout(function () { reussir(et.bravo); }, 700);
+      } else {
+        t.classList.add('bien'); setTimeout(function () { t.classList.remove('bien'); }, 900);
+        rate(t, '« ' + w.t.replace(/[,.]$/, '') + ' » est bien écrit… Grisemine ricane.');
+      }
+    };
+  },
+
+  construire: function (et, z) {
+    var k = 0, choisis = [], bloque = false;
+    function rendu() {
+      var it = et.items[k], h = titre(et) + '<div class="bougies">', i, mots = [];
+      for (i = 0; i < et.items.length; i++) h += ico('chandelle', i < k ? 'on' : '');
+      for (i = 0; i < choisis.length; i++) mots.push(it.mots[choisis[i]]);
+      h += '</div><div class="cible">Construction demandée : <b>' + it.cible + '</b></div><div class="phrase">' + joindre(mots) + '&nbsp;</div><div class="tuiles">';
+      for (i = 0; i < it.mots.length; i++) h += '<span class="tuile' + (choisis.indexOf(i) >= 0 ? ' usee' : '') + '" data-a="tuile" data-i="' + i + '">' + it.mots[i] + '</span>';
+      z.innerHTML = h + '</div><div class="centre"><span class="btn btn-sec" data-a="eff">Effacer</span></div>';
+    }
+    rendu();
+    z.onclick = function (e) {
+      var t = cible(e, z), a = action(t), it = et.items[k];
+      if (bloque) return;
+      if (a === 'eff') { choisis = []; rendu(); return; }
+      if (a !== 'tuile') return;
+      var i = +t.getAttribute('data-i');
+      if (choisis.indexOf(i) >= 0) return;
+      choisis.push(i); SON.fx('tap'); rendu();
+      if (choisis.length === it.rep.length) {
+        var mots = [];
+        for (var j = 0; j < choisis.length; j++) mots.push(it.mots[choisis[j]]);
+        bloque = true;
+        if (mots.join('|') === it.rep.join('|')) {
+          SON.fx('tinte'); k++;
+          setTimeout(function () { bloque = false; choisis = []; if (k >= et.items.length) reussir(et.bravo); else rendu(); }, 800);
+        } else {
+          rate(z.querySelector('.phrase'), 'Le fil se casse. ' + hasard(MOQUERIES));
+          setTimeout(function () { bloque = false; choisis = []; rendu(); }, 900);
+        }
+      }
+    };
+  },
+
+  message: function (et, z) {
+    var dest = EQ[et.pour];
+    SON.fx('chuchote');
+    z.innerHTML = '<div class="message apparait">' + ico('fantome', 'msg-ico') + '<h2>Message des esprits</h2>' +
+      '<p class="consigne">Un murmure s’échappe du mur. Il n’est pas pour vous… Il est pour l’équipe des <b style="color:' + dest.couleur + '">' + dest.nom + '</b>.</p>' +
+      '<div class="mot-secret">' + et.mot + '</div>' +
+      '<p class="consigne">Envoyez <b>un seul messager</b> le chuchoter à l’oreille de l’équipe des ' + dest.nom + '. Sans ce mot, ils resteront prisonniers.</p>' +
+      '<p class="consigne"><i>Et retenez bien ceci : bientôt, vous aussi, vous aurez besoin d’un mot venu d’une autre équipe.</i></p>' +
+      '<span class="btn" data-a="go">Le message est livré</span></div>';
+    z.onclick = function (e) { if (action(cible(e, z)) === 'go') avancer(); };
+  },
+
+  sceau: function (et, z) {
+    var src = EQ[et.de], fini = false;
+    z.innerHTML = '<div class="sceau-ecran apparait"><div class="sceau" id="sceau">' + ico('sceau') + '<div class="sceau-ico">' + ico(src.icone) + '</div></div><h2>' + et.titre + '</h2>' +
+      '<p class="consigne">' + SCEAU_TXT.replace('{eq}', '<b style="color:' + src.couleur + '">des ' + src.nom + '</b>') + '</p>' +
+      '<input class="mdp" id="mdp" type="text" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" placeholder="mot de passe">' +
+      '<div><span class="btn" data-a="ok">Briser le sceau</span></div></div>';
+    var champ = $('#mdp');
+    function essayer() {
+      if (fini) return;
+      if (norm(champ.value) === norm(et.mot)) {
+        fini = true; champ.blur(); $('#sceau').classList.add('brise'); SON.fx('gong');
+        setTimeout(function () { reussir(et.bravo); }, 1000);
+      } else rate(champ, 'Le sceau reste froid comme une pierre tombale…');
+    }
+    champ.onkeyup = function (e) { if (e.keyCode === 13) essayer(); };
+    z.onclick = function (e) { if (action(cible(e, z)) === 'ok') essayer(); };
+  },
+
+  fin: function (et, z, eq) {
+    SON.fx('gong');
+    z.innerHTML = '<div class="fin apparait"><h2 class="lueur">Ingrédient trouvé !</h2><div class="ingr">' + ico(eq.ingrIco) + '<b>' + eq.ingredient + '</b></div>' +
+      '<div class="carte fin-carte"><div class="fin-l"><small>Votre chiffre</small><div class="gros-chiffre">' + eq.chiffre + '</div></div>' +
+      '<div class="fin-l"><small>Votre ligne de la formule</small><div class="vers">« ' + eq.vers + ' »</div></div></div>' +
+      '<p class="consigne">Gardez-les en mémoire. Quand toutes les équipes seront prêtes, la classe se réunira autour du <b>Grand Chaudron</b> (le tableau).</p>' +
+      '<p class="consigne">Une autre équipe est encore prisonnière ? <b>Allez l’aider</b> — avec des indices, jamais avec les réponses. Grisemine déteste l’entraide. C’est sa seule faiblesse.</p></div>';
+  }
+};
+
+/* ---------------------------------------------------------------- Le Tableau (TNI) */
+var T = lire(CLE_TNI) || { fin: null, reste: null, duree: 45, libres: {} };
+function sauverT() { ecrire(CLE_TNI, T); }
+var tick = null, alerte = false, dernierCoeur = 0;
+var INTRO = [
+  'Il y a des maisons devant lesquelles on presse le pas. Celle du bout de la rue des Ormes en fait partie.',
+  'Hier soir, une odeur de caramel chaud s’en échappait. Une odeur si bonne… que vous l’avez suivie.',
+  'La porte s’est ouverte toute seule. Puis elle s’est refermée derrière vous, dans un long grincement.',
+  'Sur la table, un mot griffonné : « Partie faire une dernière course. Ne touchez à rien. Je reviens très vite. — Grisemine »',
+  'Le manoir a quatre pièces. Chaque équipe en fouillera une. Mais les portes sont scellées, et chaque sceau ne se brise qu’avec un mot connu… d’une AUTRE équipe.',
+  'Personne ne sortira seul. Trouvez les quatre ingrédients du contre-sort, réunissez-vous autour du Grand Chaudron et prononcez la formule. Ensemble. Avant son retour.'
+];
+function coinProf() { return '<span class="coin-prof" data-a="maison">Accueil</span>'; }
+function tni() {
+  clearInterval(tick);
+  mode('tni');
+  if (T.fin || T.reste !== null) tniVeille(); else tniIntro();
+}
+function tniIntro() {
+  var p = 0;
+  function rendu() {
+    var h = coinProf() + '<div class="defile"><div class="tni-intro"><h1 class="lueur">Le manoir de Grisemine</h1>', i;
+    for (i = 0; i <= p; i++) h += '<p class="' + (i === p ? 'apparait' : '') + '">' + INTRO[i] + '</p>';
+    if (p < INTRO.length - 1) h += '<span class="btn" data-a="suite">Suite…</span>';
+    else h += '<div class="duree">Durée : <span class="btn btn-sec" data-a="moins">−5</span><b>' + T.duree + ' min</b><span class="btn btn-sec" data-a="plus">+5</span></div><span class="btn" data-a="go">Verrouiller les portes</span>';
+    app.innerHTML = h + '</div></div>';
+  }
+  rendu();
+  app.onclick = function (e) {
+    var a = action(cible(e, app));
+    if (a === 'suite') { p++; SON.fx('chuchote'); rendu(); }
+    else if (a === 'moins' && T.duree > 10) { T.duree -= 5; rendu(); }
+    else if (a === 'plus') { T.duree += 5; rendu(); }
+    else if (a === 'go') { T.fin = Date.now() + T.duree * 60000; T.reste = null; T.libres = {}; alerte = false; sauverT(); SON.fx('porte'); SON.fx('gong'); tniVeille(); }
+    else if (a === 'maison') { clearInterval(tick); accueil(); }
+  };
+}
+function resteMs() { return T.fin ? T.fin - Date.now() : (T.reste || 0); }
+function tniVeille() {
+  var h = coinProf() + '<div class="tni tni-veille"><div class="tni-scene"><div class="scene">' + sceneSVG() + '</div></div><div class="tni-cote">' +
+    '<div class="chrono-l">Retour de Grisemine dans</div><div class="chrono" id="chrono">--:--</div>' +
+    '<div class="bougie-tni"><div class="corps" id="corps"><div class="flamme"></div></div></div>' +
+    '<div class="chrono-l">Ingrédients trouvés</div><div class="blasons-tni">', i, e;
+  for (i = 0; i < ORDRE_EQ.length; i++) { e = EQ[ORDRE_EQ[i]]; h += '<span data-a="libre" data-id="' + ORDRE_EQ[i] + '" class="' + (T.libres[ORDRE_EQ[i]] ? 'libre' : '') + '" style="border-color:' + e.couleur + ';color:' + e.couleur + '">' + ico(e.icone) + '</span>'; }
+  h += '</div><div class="tni-btns"><span class="btn btn-sec" data-a="pause">' + (T.fin ? 'Pause' : 'Reprendre') + '</span><span class="btn btn-sec" data-a="plus5">+5 min</span><br><span class="btn" data-a="chaudron">Le Grand Chaudron</span><br><span class="btn btn-sec" data-a="raz" style="font-size:1.1vw">Recommencer le jeu</span></div></div></div>';
+  app.innerHTML = h;
+  app.onclick = function (ev) {
+    var t = cible(ev, app), a = action(t);
+    if (a === 'libre') { var id = t.getAttribute('data-id'); T.libres[id] = !T.libres[id]; t.className = T.libres[id] ? 'libre' : ''; if (T.libres[id]) SON.fx('bon'); sauverT(); }
+    else if (a === 'pause') {
+      if (T.fin) { T.reste = T.fin - Date.now(); T.fin = null; t.innerHTML = 'Reprendre'; }
+      else { T.fin = Date.now() + (T.reste || 0); T.reste = null; t.innerHTML = 'Pause'; }
+      sauverT(); maj();
+    }
+    else if (a === 'plus5') { if (T.fin) T.fin += 300000; else T.reste = (T.reste || 0) + 300000; alerte = false; sauverT(); maj(); }
+    else if (a === 'chaudron') { clearInterval(tick); document.body.classList.remove('urgence'); tniChaudron(); }
+    else if (a === 'raz') { if (window.confirm('Effacer le chrono et recommencer le jeu au Tableau ?')) { T = { fin: null, reste: null, duree: T.duree, libres: {} }; sauverT(); document.body.classList.remove('urgence'); tni(); } }
+    else if (a === 'maison') { clearInterval(tick); accueil(); }
+  };
+  function maj() {
+    var r = Math.max(0, resteMs()), s = Math.ceil(r / 1000), mm = Math.floor(s / 60), ss = s % 60;
+    var c = $('#chrono'); if (!c) return;
+    c.innerHTML = (mm < 10 ? '0' : '') + mm + ':' + (ss < 10 ? '0' : '') + ss;
+    $('#corps').style.height = Math.max(4, Math.min(100, r / (T.duree * 60000) * 100)) + '%';
+    if (r <= 300000) document.body.classList.add('urgence'); else document.body.classList.remove('urgence');
+    if (T.fin && r <= 120000 && r > 0 && Date.now() - dernierCoeur > 1300) { dernierCoeur = Date.now(); SON.fx('coeur'); }
+    if (T.fin && r <= 0 && !alerte) {
+      alerte = true; SON.fx('porte');
+      voile(ico('chat', 'msg-ico') + '<div class="titre-voile">Des pas dans l’allée…</div><p>Une clé tourne dans la serrure. Grisemine est sur le seuil !<br>…Mais elle fouille son sac. Elle a oublié quelque chose.</p>' +
+        '<span class="btn" data-a="plus5">Elle repart chercher son chapeau (+5 min)</span><span class="btn btn-sec" data-a="chaudron">Le Grand Chaudron</span>', function (a2, t2, v) {
+        fermer(v);
+        if (a2 === 'plus5') { T.fin = Date.now() + 300000; alerte = false; sauverT(); maj(); }
+        else if (a2 === 'chaudron') { clearInterval(tick); document.body.classList.remove('urgence'); tniChaudron(); }
+      });
+    }
+  }
+  maj();
+  clearInterval(tick); tick = setInterval(maj, 500);
+}
+var RECETTE = [
+  { id: 'chauve', nom: 'Aile de chauve-souris', ico: 'chauve', vers: 'Par l’aile noire et la lune pâle,' },
+  { id: 'araignee', nom: 'Fil d’araignée', ico: 'araignee', vers: 'par le fil qui tisse la toile,' },
+  { id: 'hibou', nom: 'Plume de hibou', ico: 'plume', vers: 'par la plume qui veille la nuit,' },
+  { id: 'citrouille', nom: 'Graine de citrouille', ico: 'cit-lanterne', vers: 'que la porte s’ouvre… avant minuit !' }
+];
+function tniChaudron() {
+  var k = 0, boutons = melange(RECETTE), bloque = false;
+  function rendu() {
+    var h = coinProf() + '<div class="tni chaudron-ecran"><div class="ch-gauche"><h2 class="lueur">Le Grand Chaudron</h2>' +
+      '<p>Versez les quatre ingrédients dans le bon ordre :</p>' +
+      '<p>D’abord, ce qui dort la tête en bas.</p><p>Puis, ce qui tisse sans aiguille.</p><p>Ensuite, ce qui voit dans le noir et tourne la tête presque jusque dans son dos.</p><p>Enfin, ce qui sourit avec une flamme dans la tête.</p></div>' +
+      '<div class="ch-centre">' + ico('chaudron', 'gros-chaudron') + '<div class="fentes" id="fentes">', i;
+    for (i = 0; i < RECETTE.length; i++) h += '<span>' + (i < k ? ico(RECETTE[i].ico) : '') + '</span>';
+    h += '</div><div class="ingredients-tni">';
+    for (i = 0; i < boutons.length; i++) {
+      var deja = false;
+      for (var j = 0; j < k; j++) if (RECETTE[j].id === boutons[i].id) deja = true;
+      h += '<span data-a="ingr" data-id="' + boutons[i].id + '" style="' + (deja ? 'visibility:hidden' : '') + '">' + ico(boutons[i].ico) + boutons[i].nom + '</span>';
+    }
+    app.innerHTML = h + '</div></div></div>';
+  }
+  rendu();
+  app.onclick = function (e) {
+    var t = cible(e, app), a = action(t);
+    if (a === 'maison') { accueil(); return; }
+    if (a !== 'ingr' || bloque) return;
+    if (t.getAttribute('data-id') === RECETTE[k].id) {
+      k++; SON.fx('bulle'); rendu();
+      if (k === RECETTE.length) { bloque = true; setTimeout(function () { SON.fx('gong'); tniCouvercle(); }, 900); }
+    } else {
+      bloque = true; rate(t, 'Le chaudron recrache tout dans un gros « BLOURP ».');
+      setTimeout(function () { k = 0; bloque = false; rendu(); }, 900);
+    }
+  };
+}
+function tniCouvercle() {
+  app.innerHTML = coinProf() + '<div class="tni chaudron-ecran"><div class="ch-gauche"><h2 class="lueur">Le couvercle est scellé</h2>' +
+    '<p>Le chaudron bouillonne, mais son couvercle refuse de s’ouvrir.</p><p>Chaque équipe a reçu un chiffre. Placez-les dans l’ordre de la recette : aile, fil, plume, graine.</p></div>' +
+    '<div class="ch-centre" id="cad-tni"></div></div>';
+  app.onclick = function (e) { if (action(cible(e, app)) === 'maison') accueil(); };
+  cadenas($('#cad-tni'), '3110', function () {
+    SON.fx('bon');
+    voile('<div class="titre-voile">31 / 10</div><p style="font-size:2.4vw">La nuit d’Halloween. La nuit de Grisemine.<br>Le couvercle se soulève… Il ne reste plus qu’à prononcer la formule.</p><span class="btn" data-a="ok">La formule</span>', function (a, t, v) {
+      if (a === 'ok') { fermer(v); tniFormule(); }
+    });
+  }, 'Couvercle du chaudron');
+}
+function tniFormule() {
+  var n = 0;
+  function rendu() {
+    var h = coinProf() + '<div class="defile"><div class="formule"><h2 class="lueur">La formule du contre-sort</h2>', i;
+    for (i = 0; i < n; i++) h += '<div class="ligne apparait">' + ico(RECETTE[i].ico) + RECETTE[i].vers + '</div>';
+    if (n < RECETTE.length) h += '<p class="tous" style="font-size:2vw">' + (n === 0 ? 'Chaque équipe lit sa ligne à voix haute, dans l’ordre de la recette.' : '') + '</p><span class="btn" data-a="suite">' + (n === 0 ? 'Première ligne' : 'Ligne suivante') + '</span>';
+    else h += '<div class="tous apparait">Maintenant… TOUS ENSEMBLE, à voix haute !</div><span class="btn" data-a="fini">La formule est prononcée</span>';
+    app.innerHTML = h + '</div></div>';
+  }
+  rendu();
+  app.onclick = function (e) {
+    var a = action(cible(e, app));
+    if (a === 'suite') { n++; SON.fx('tinte'); rendu(); }
+    else if (a === 'fini') tniFinale();
+    else if (a === 'maison') accueil();
+  };
+}
+function tniFinale() {
+  evenements('fin');
+  SON.ambiance(0); SON.fx('gong'); SON.fx('porte');
+  var ec = $('#eclair'); ec.classList.remove('flash'); void ec.offsetWidth; ec.classList.add('flash');
+  var lignes = ['Le chaudron se tait.', 'Quelque part, une porte grince…', '<span class="gros">Vous êtes libres.</span>', 'Grisemine rentre de ses courses et trouve son manoir vide. Elle hurle… puis elle éclate de rire.', '<span class="petit">« Bien joué, mes petits. À l’an prochain… »</span>'];
+  var h = coinProf() + '<div class="finale">', i;
+  for (i = 0; i < lignes.length; i++) h += '<p id="fl' + i + '"' + (i === 4 ? ' class="petit"' : '') + '>' + lignes[i] + '</p>';
+  app.innerHTML = h + '</div>';
+  app.onclick = function (e) { if (action(cible(e, app)) === 'maison') accueil(); };
+  for (i = 0; i < 14; i++) (function (j) {
+    var b = document.createElement('div');
+    b.className = 'bat-f'; b.innerHTML = ico('chauve');
+    document.body.appendChild(b);
+    setTimeout(function () {
+      var ang = j / 14 * Math.PI * 2, d = 600 + Math.random() * 500;
+      b.style.transform = 'translate3d(' + Math.round(Math.cos(ang) * d) + 'px,' + Math.round(Math.sin(ang) * d) + 'px,0) scale(' + (0.6 + Math.random()) + ')';
+      b.style.opacity = '0';
+    }, 60 + j * 40);
+    setTimeout(function () { if (b.parentNode) b.parentNode.removeChild(b); }, 4000);
+  })(i);
+  for (i = 0; i < lignes.length; i++) (function (j) {
+    setTimeout(function () { var p = $('#fl' + j); if (p) p.classList.add('vu'); if (j === 2) SON.fx('bon'); if (j === 4) SON.fx('chuchote'); }, 1200 + j * 2600);
+  })(i);
+  setTimeout(function () {
+    var y = document.createElement('div'); y.className = 'yeux'; y.innerHTML = '<i></i><i></i>';
+    y.style.left = '88%'; y.style.top = '82%'; ajouter(y, 4400);
+  }, 15000);
+}
+
+/* ---------------------------------------------------------------- Guide de l'enseignant */
+function guide() {
+  mode('guide');
+  app.innerHTML = '<div class="guide"><div class="page">' +
+    '<p class="no-print"><span class="btn" data-a="maison" style="background:#4a1d5e">← Accueil</span> <span class="btn" data-a="imprimer" style="background:#4a1d5e">Imprimer</span></p>' +
+    '<h1>Le manoir de Grisemine — guide de l’enseignant</h1>' +
+    '<p>Jeu d’évasion collectif pour une classe de 6<sup>e</sup> année, en 4 équipes de 4. Durée : 45 à 60 minutes. Notions : décomposition de nombres, constructions du groupe du nom, accords dans le GN, inférences.</p>' +
+    '<h2>Matériel</h2><ul><li>4 iPad (un par équipe) ouverts sur cette page.</li><li>Le tableau (TNI) ouvert sur cette même page, bouton « Tableau de la classe ». Le son du TNI fait beaucoup pour l’ambiance : montez le volume.</li><li>Rien à imprimer. Lumières tamisées, idéalement.</li></ul>' +
+    '<h2>Mise en place (5 minutes)</h2><ol><li>Sur chaque iPad : ouvrir la page, toucher l’équipe. La tablette reste liée à cette équipe (même si on recharge la page).</li><li>Au TNI : « Tableau de la classe », lire la mise en situation à voix haute (bouton « Suite »), choisir la durée, puis « Verrouiller les portes ».</li><li>Pendant le jeu, quand une équipe trouve son ingrédient, touchez son blason au TNI : il s’allume.</li></ol>' +
+    '<h2>Ce qui rend la quête collective</h2><ul><li><b>Les messages des esprits.</b> Après sa première énigme, chaque équipe reçoit un mot de passe… destiné à une AUTRE équipe. Un messager va le chuchoter.</li><li><b>Les sceaux.</b> Avant sa dernière énigme, chaque équipe doit entrer le mot reçu d’une autre équipe. Personne ne finit seul : Chauves-souris → Araignées → Citrouilles → Hiboux → Chauves-souris.</li><li><b>Le Grand Chaudron.</b> La fin se joue au TNI, toute la classe ensemble : chaque équipe apporte un ingrédient, un chiffre et une ligne de la formule.</li><li>L’écran de fin invite les équipes qui ont terminé à aller aider les autres (avec des indices, pas des réponses).</li></ul>' +
+    '<h2>Indices et code de l’enseignant</h2><p>Chaque équipe a <b>3 plumes de corbeau</b> pour tout le jeu (bouton en haut à droite) ; une plume = un indice. Pour débloquer une équipe : touchez <b>5 fois rapidement</b> le blason rond en haut à gauche de l’iPad, puis entrez le code <span class="code">1031</span>. Vous pourrez passer une étape, reculer, redonner des plumes ou changer d’équipe.</p>' +
+    '<h2>Solutionnaire</h2>' +
+    '<table><tr><th>Équipe</th><th>Énigme 1</th><th>Mot à livrer</th><th>Énigme 2</th><th>Sceau (mot reçu)</th><th>Énigme 3</th><th>Chiffre</th></tr>' +
+    '<tr><td><b>Chauves-souris</b><br>Grenier</td><td>Philtre du Chat-Fantôme (inférence)</td><td class="code">CHANDELLE<br>→ Araignées</td><td>60 000 + 4 000 + 300 + 50 + 7 = <span class="code">64357</span></td><td class="code">LANTERNE</td><td>amère · baveux · vieilles · noires · bel</td><td class="code">3</td></tr>' +
+    '<tr><td><b>Araignées</b><br>Remise</td><td>Tri des 8 GN par construction</td><td class="code">BROUILLARD<br>→ Citrouilles</td><td>rouge · violet · bleu · vert · rouge · bleu</td><td class="code">CHANDELLE</td><td>ces griffes crochues · un chapeau à pointe · la toile de l’araignée</td><td class="code">1</td></tr>' +
+    '<tr><td><b>Citrouilles</b><br>Jardin</td><td>1 momie (7), 2 effrayée (2), 3 sorcière (1), 4 Frankenstein (5), 5 clown (8) = <span class="code">72158</span></td><td class="code">SORTILÈGE<br>→ Hiboux</td><td>4 020 · 4 030 · 4 300 · 4 305 · 40 003 = OMBRE</td><td class="code">BROUILLARD</td><td>crapauds · poilue · noires · grises · ongles</td><td class="code">0</td></tr>' +
+    '<tr><td><b>Hiboux</b><br>Bibliothèque</td><td>Le corbeau (inférence)</td><td class="code">LANTERNE<br>→ Chauves-souris</td><td>sombres · vieille · poussiéreux · belle · jaunies · nouvel = MINUIT</td><td class="code">SORTILÈGE</td><td>La cuisine de la sorcière · Le chat vampire · Une soupe de citrouille · Les nuits glaciales</td><td class="code">1</td></tr></table>' +
+    '<h2>Le Grand Chaudron (au TNI)</h2><ol><li>Ordre des ingrédients : aile de chauve-souris, fil d’araignée, plume de hibou, graine de citrouille.</li><li>Couvercle : les chiffres dans cet ordre donnent <span class="code">3110</span> (le 31 octobre).</li><li>La formule, une ligne par équipe, puis tous ensemble :<br><i>Par l’aile noire et la lune pâle, / par le fil qui tisse la toile, / par la plume qui veille la nuit, / que la porte s’ouvre… avant minuit !</i></li></ol>' +
+    '<h2>Quand le temps est écoulé</h2><p>Grisemine arrive sur le seuil… et repart chercher son chapeau : le TNI propose d’ajouter 5 minutes. Personne ne perd, le jeu va jusqu’au bout.</p>' +
+    '<h2>Pour rejouer avec un autre groupe</h2><p>Sur chaque iPad : code enseignant → « Changer d’équipe ». Au TNI : « Recommencer le jeu ».</p>' +
+    '</div></div>';
+  app.onclick = function (e) {
+    var a = action(cible(e, app));
+    if (a === 'maison') accueil();
+    else if (a === 'imprimer') window.print();
+  };
+}
+
+/* ---------------------------------------------------------------- Démarrage */
+var q = window.location.search || '';
+if (q.indexOf('tni') >= 0) tni();
+else if (q.indexOf('guide') >= 0) guide();
+else if (S.eq && EQ[S.eq]) equipe();
+else accueil();
+
+})();
+</script>
+</body>
+</html>
